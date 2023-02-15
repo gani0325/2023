@@ -4,8 +4,6 @@
 const express = require("express");
 const app = express();
 
-const PORT = 3000;
-
 // 라우터
 const home = require("./routes/home");
 
@@ -16,6 +14,5 @@ app.set("view engine", "ejs");
 // routes 꺼 받아오기
 app.use("/", home);      // use -> 미들 웨어를 등록해주는 메서드
 
-app.listen(PORT, function () {
-    console.log("서버 가동");
-});
+// app.js 내보내기
+module.exports = app;

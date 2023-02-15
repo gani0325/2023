@@ -3,13 +3,11 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.render("home/index");
-});
-
-router.get("/login", (req, res) => {
-    res.render("home/login");
-});
+// 받아오기 (컨트롤러)
+const ctrl = require("./home.ctrl");
+// 컨트롤러 안에 있는 객체 불러오기!
+router.get("/", ctrl.hello);
+router.get("/login", ctrl.login);
 
 
 // 내보내기
