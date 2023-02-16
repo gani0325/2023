@@ -21,5 +21,10 @@ function login() {
             "Content-Type" : "application/json",
         },
         body : JSON.stringify(req),      // json type으로
-    });
+    })
+        .then((res) => res.json())
+        .then(console.log);
+
+    // res.json()의 반환값은 promise
+    // 기본 res의 반환값은 response 스트림
 }
