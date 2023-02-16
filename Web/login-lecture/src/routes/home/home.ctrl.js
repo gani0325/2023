@@ -20,8 +20,6 @@ const process = {
         // json 형태로 response 응답한다
         const user = new User(req.body);
         const response = user.login();
-        console.log(response);
-
         return res.json(response);
     },
 }
