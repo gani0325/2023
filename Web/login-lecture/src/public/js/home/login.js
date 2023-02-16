@@ -23,8 +23,17 @@ function login() {
         body : JSON.stringify(req),      // json type으로
     })
         .then((res) => res.json())
-        .then(console.log);
-
+        .then((res) => {
+            // 로그인 성공하면 main으로
+            if (res.success) {
+                location.href = "/";
+            } else {
+                alert(res.msg);
+            }
+        })
+        .catch((err) => {
+            console.error(new Error("로그인 중 에러 발생"));
+        });
     // res.json()의 반환값은 promise
     // 기본 res의 반환값은 response 스트림
 }
