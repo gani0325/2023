@@ -6,9 +6,6 @@ const user_id = document.querySelector("#user_id");      // 선택자 -> HTML의
 const user_pw = document.querySelector("#user_pw");
 const loginBtn = document.querySelector("button");
 
-console.log(user_id);
-console.log("hello");
-
 loginBtn.addEventListener("click", login);
 
 function login() {
@@ -23,7 +20,6 @@ function login() {
         headers : {
             "Content-Type" : "application/json",
         },
-        body : JSON.stringify(req)      // json type으로
+        body : JSON.stringify(req),      // json type으로
     });
-    
 }
