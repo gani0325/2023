@@ -16,5 +16,14 @@ function login() {
         id : user_id.value,
         pw : user_pw.value
     };
-    console.log(req);
+    
+    // 데이터 전달하는 과정 (ROUTER server에 API 경로 있어야됨)
+    fetch("/login", {
+        method : "POST",                // 쓰기
+        headers : {
+            "Content-Type" : "application/json",
+        },
+        body : JSON.stringify(req)      // json type으로
+    });
+    
 }
