@@ -20,6 +20,20 @@ class UserSchema{
         }, {});
         return newUsers;
     }
+
+    static getUsersInfo(id) {
+        const users = this.#users;
+        const idx = users.id.indexOf(id);
+        // users의 키값들만 배열로! [id, pw, name]
+        const usersKeys = Object.keys(users);
+        // reduce 반복문을 통해 newUser에 키값이 순서대로 들어감
+        // users의 키값의 idx(id에 해당하는 값 넣기)
+        const userInfo = usersKeys.reduce((newUsers, info) => {
+            newUsers[info] = users[info][idx];
+            return newUsers;
+        }, {});
+        return userInfo;
+    }
 }
 
 module.exports = UserSchema;

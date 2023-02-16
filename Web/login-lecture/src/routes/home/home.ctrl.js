@@ -1,11 +1,11 @@
 "use strict";
-const UserSchema = require("../../models/UserSchema");
+// const UserSchema = require("../../models/UserSchema");
+const User = require("../../models/User");
 
 const output = {
     home : (req, res) => {
         res.render("home/index");
     },
-    
     login : (req, res) => {
         res.render("home/login");
     },
@@ -13,23 +13,12 @@ const output = {
 
 const process = {
     login : (req, res) => {
-        const id = req.body.id;
-        const pw = req.body.pw;
+        // user 인스턴스가 login 하면 response 받음
+        // json 형태로 response 응답한다
+        const user = new User(req.body);
+        const response = user.login();
+        console.log(response);
 
-        // 모든 login 값 가져오기 (로그인 검증)
-        const users = UserSchema.getUsers("id", "pw");
-        const response = {};
-
-        // id가 users.id에 있을경우
-        if (users.id.includes(id)) {
-            const idx = users.id.indexOf(id);
-            if (users.pw[idx] === pw) {
-                response.success = true;
-                return res.json(response);
-            }
-        }
-        response.success = false;
-        response.msg = "로그인에 실패하셨습니다."
         return res.json(response);
     },
 }
