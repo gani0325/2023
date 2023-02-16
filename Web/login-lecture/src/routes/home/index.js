@@ -8,8 +8,8 @@ const ctrl = require("./home.ctrl");
 
 // 컨트롤러 안에 있는 객체 불러오기!
 router.get("/", ctrl.output.home);
-router.get("/login", ctrl.output.login);
-
+router.get("/login", ctrl.output.login);        // 로그인 화면
+router.get("/register", ctrl.output.register);     // 회원가입 화면
 router.post("/login", ctrl.process.login);
 
 // 내보내기
