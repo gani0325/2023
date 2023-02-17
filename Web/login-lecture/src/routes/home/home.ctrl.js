@@ -15,11 +15,11 @@ const output = {
 }
 
 const process = {
-    login : (req, res) => {
+    login : async (req, res) => {
         // user 인스턴스가 login 하면 response 받음
         // json 형태로 response 응답한다
         const user = new User(req.body);
-        const response = user.login();
+        const response = await user.login();    // async await 함수는 자체적으로 promise
         return res.json(response);
     },
 

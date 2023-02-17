@@ -7,10 +7,11 @@ class User {
         this.body = body;
     }
 
-    login() {
+    async login() {
         const client = this.body;
         // 클라이언트의 id에 해당하는 object 전달하는 메소드
-        const { id, pw } = UserSchema.getUsersInfo(client.id);
+        const {id, pw} = await UserSchema.getUsersInfo(client.id);
+        // await : promise를 반환하기 때문에 .then()으로 접근하여 데이터 가져옴
         
         if (id) {
             // id가 있고, id가 받아온 값과 같다면
