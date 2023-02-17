@@ -26,7 +26,7 @@ function login() {
         .then((res) => {
             // 로그인 성공하면 main으로
             if (res.success) {
-                location.href = "/login";
+                location.href = "/";
             } else {
                 alert(res.msg);
             }

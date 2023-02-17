@@ -5,7 +5,7 @@ class UserSchema{
     static #users = {
         id : ["gani", "gaeun"],
         pw : ["1234", "2334"],
-        name : ["가니", "가은", "간"]
+        name : ["가니", "가은"]
     };
 
     static getUsers(...fields) {
@@ -33,6 +33,15 @@ class UserSchema{
             return newUsers;
         }, {});
         return userInfo;
+    }
+    
+    // 회원가입 임시 저장
+    static save(userInfo) {
+        const users = this.#users;
+        users.id.push(userInfo.id);
+        users.pw.push(userInfo.pw);
+        users.name.push(userInfo.name);
+        return { success : true };
     }
 }
 

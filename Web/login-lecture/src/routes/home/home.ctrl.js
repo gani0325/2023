@@ -22,6 +22,14 @@ const process = {
         const response = user.login();
         return res.json(response);
     },
+
+    register : (req, res) => {
+        // user 인스턴스가 login 하면 response 받음
+        // json 형태로 response 응답한다
+        const user = new User(req.body);
+        const response = user.register();
+        return res.json(response);
+    },
 }
 
 // 꼭 밖으로 호출하기
