@@ -23,11 +23,15 @@ class User {
         return {success : false, msg : "존재하지 않는 비밀번호입니다"};
     }
 
-    register() {
+    async register() {
         const client = this.body;
-        // 데이터 저장하기
-        const response = UserSchema.save(client);
-        return response;
+        try {
+            // 데이터 저장하기
+          const response = await UserSchema.save(client);
+          return response;
+        } catch(err) {
+          return { sucess : false, msg : err };
+        }
     }
 }
 

@@ -23,11 +23,11 @@ const process = {
         return res.json(response);
     },
 
-    register : (req, res) => {
+    register : async (req, res) => {
         // user 인스턴스가 login 하면 response 받음
         // json 형태로 response 응답한다
         const user = new User(req.body);
-        const response = user.register();
+        const response = await user.register();
         return res.json(response);
     },
 }

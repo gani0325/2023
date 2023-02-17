@@ -19,8 +19,10 @@ class UserSchema{
         return userInfo;
     }
 
-    static getUsers(...fields) {
-        // const users = this.#users;
+    static #getUsers(data, isAll, fields) {
+        const users = JSON.parse(data);
+        if (isAll) return users;
+
         // reduce : 반복문
         const newUsers = fields.reduce((newUsers, field) => {
             // users에 해당하는 키(field)값이 있으면 오브젝트(newUsers)에 넣어주겠음
@@ -32,6 +34,14 @@ class UserSchema{
         return newUsers;
     }
 
+    static getUsers(isAll, ...fields) {
+        return fs.readFile("./src/databases/user.json")
+        .then((data) => {
+            return this.#getUsers(data, isAll, fields);
+        })
+        .catch(console.error);
+    }
+
     static getUsersInfo(id) {
         return fs.readFile("./src/databases/user.json")
             .then((data) => {
@@ -41,11 +51,19 @@ class UserSchema{
     }
     
     // 회원가입 임시 저장
-    static save(userInfo) {
-        // const users = this.#users;
+    static async save(userInfo) {
+        const users = await this.getUsers(true);
+        
+        if (users.id.includes(userInfo.id)) {
+            throw "이미 존재하는 아이디입니다.";
+        }
+
+        // 파일에 id 없으면 저장
         users.id.push(userInfo.id);
         users.pw.push(userInfo.pw);
         users.name.push(userInfo.name);
+        // 데이터 추가
+        fs.writeFile("./src/databases/user.json", JSON.stringify(users));
         return { success : true };
     }
 }
