@@ -1,8 +1,6 @@
 "use strict";
 // database 읽어오기
-const fs = require("fs").promises;
-// promises : promise가 수행하는 동작이 끝남과 동시에 상태를 알려주기 때문에 비동기 처리
-// pending : 데이터를 전부 읽어오지 못함
+const db= require("../config/db");
 
 class UserSchema{
     static #getUserInfo(data, id) {
@@ -35,36 +33,28 @@ class UserSchema{
     }
 
     static getUsers(isAll, ...fields) {
-        return fs.readFile("./src/databases/user.json")
-        .then((data) => {
-            return this.#getUsers(data, isAll, fields);
-        })
-        .catch(console.error);
     }
 
     static getUsersInfo(id) {
-        return fs.readFile("./src/databases/user.json")
-            .then((data) => {
-                return this.#getUserInfo(data, id);
-            })
-            .catch(console.error);
+        return new Promise((resolve, reject) => {
+            const query = "SELECT * FROM users WHERE id = ?;";
+            db.query(query, [id], (err, data) => {
+                if (err) reject(`${err}`);
+                resolve(data[0]);
+            });
+        });
     }
     
     // 회원가입 임시 저장
     static async save(userInfo) {
-        const users = await this.getUsers(true);
-        
-        if (users.id.includes(userInfo.id)) {
-            throw "이미 존재하는 아이디입니다.";
-        }
-
-        // 파일에 id 없으면 저장
-        users.id.push(userInfo.id);
-        users.pw.push(userInfo.pw);
-        users.name.push(userInfo.name);
-        // 데이터 추가
-        fs.writeFile("./src/databases/user.json", JSON.stringify(users));
-        return { success : true };
+        return new Promise((resolve, reject) => {
+            const query = "INSERT INTO users(id, name, pw) VALUES(?, ?, ?);";
+            db.query(query,
+                [userInfo.id, userInfo.name, userInfo.pw], (err) => {
+                    if (err) reject(`${err}`);
+                    resolve({ success : true });
+            });
+        });
     }
 }
 
