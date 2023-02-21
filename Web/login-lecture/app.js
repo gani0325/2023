@@ -3,8 +3,10 @@
 // 모듈
 const bodyParser = require("body-parser");
 const express = require("express");
-const app = express();
+const dotenv = require("dotenv");
+dotenv.config();
 
+const app = express();
 
 // 라우터
 const home = require("./src/routes/home");
