@@ -11,12 +11,12 @@ class User {
         const client = this.body;
         try {
             // 클라이언트의 id에 해당하는 object 전달하는 메소드
-            const {id, pw} = await UserSchema.getUsersInfo(client.id);
+            const user = await UserSchema.getUsersInfo(client.id);
             // await : promise를 반환하기 때문에 .then()으로 접근하여 데이터 가져옴
             
-            if (id) {
+            if (user) {
                 // id가 있고, id가 받아온 값과 같다면
-                if (id === client.id && pw === client.pw) {
+                if (user.id === client.id && user.pw === client.pw) {
                     return {success : true};
                 }
                 return {success : false, msg : "비밀번호 틀렸습니다."};

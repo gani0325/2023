@@ -6,15 +6,15 @@ const logger = require("../../config/logger");
 // GET
 const output = {
     home : (req, res) => {        
-        logger.info(`GET / 200 "홈 화면 이동"`);
+        logger.info(`GET / 304 "홈 화면 이동"`);
         res.render("home/index");
     },
     login : (req, res) => {
-        logger.info(`GET / login 200 "로그인 화면 이동"`);
+        logger.info(`GET / login 304 "로그인 화면 이동"`);
         res.render("home/login");
     },
     register : (req, res) => {
-        logger.info(`GET / register 200 "회원가입 화면 이동"`);
+        logger.info(`GET / register 304 "회원가입 화면 이동"`);
         res.render("home/register");
     }
 }
@@ -44,7 +44,7 @@ const process = {
         const url = {
             method : "POST",
             path : "/register",
-            status : response.err ? 400 : 200,        // 200 : 정상, 400 : 비정상
+            status : response.err ? 409 : 201,        // 200 : 정상, 409 : 요청이 현재 서버의 상태와 충돌될 때
         };
         log(response, url);
         return res.status(url.status).json(response);
