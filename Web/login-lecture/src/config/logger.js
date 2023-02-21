@@ -44,4 +44,9 @@ if (process.env.NODE_ENV !== "production") {
     logger.add(opts.console);
 }
 
+// morgan과 winston 합치기
+logger.stream = {
+    write : (message) => logger.info(message),
+};
+
 module.exports = logger;
