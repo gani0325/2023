@@ -13,8 +13,6 @@ dotenv.config();
 // 라우터
 const home = require("./src/routes/home");
 const accessLogStream = require("./src/config/log");
-const logger = require("./src/config/logger");
-logger.log("info", "Hellow");
 
 // 앱 세팅
 app.set("views", "./src/views");
