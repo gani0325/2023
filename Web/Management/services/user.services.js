@@ -28,13 +28,11 @@ async function login({ username, password }, callback) {
 }
 
 async function register(params, callback) {
-    const user = new User(params);
-
-    if(params.username === undefined) {
+    if(params.username === undefiend) {
         return callback({message : "아이디 입력해주세요"});
     }
 
-    
+    const user = new User(params);
     user.save()
         .then((response) => {
             return callback(null, response);
