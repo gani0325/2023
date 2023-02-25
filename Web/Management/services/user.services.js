@@ -1,3 +1,6 @@
+'use strict';
+
+
 const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const auth = require("../middlewares/auth.js")
@@ -25,11 +28,13 @@ async function login({ username, password }, callback) {
 }
 
 async function register(params, callback) {
-    if(params.username === undefiend) {
+    const user = new User(params);
+
+    if(params.username === undefined) {
         return callback({message : "아이디 입력해주세요"});
     }
 
-    const user = new User(params);
+    
     user.save()
         .then((response) => {
             return callback(null, response);

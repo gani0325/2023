@@ -28,7 +28,7 @@ userSchema.set("toJSON", {
         returnedObject.id = returnedObject._id.toString();
         // _id, _v, password 전역 스키마 설정을 등록하여 삭제
         delete returnedObject._id;
-        delete returnedObject._v;
+        delete returnedObject.__v;
         delete returnedObject.password;
     },
 });

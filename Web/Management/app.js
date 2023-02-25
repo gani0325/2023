@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require("express");
 const mongoose = require("mongoose");
 const dbConfig = require("./config/db.config");
@@ -36,7 +38,7 @@ app.use(auth.authenticateToken.unless({
         { url: '/users/login', methods: ['POST']},
         { url: '/users/register', methods: ['POST']}
     ]
-}))
+}));
 
 // 클라이언트로 부터 받은 http 요청 메시지 형식에서 body데이터를 해석
 app.use(express.json());

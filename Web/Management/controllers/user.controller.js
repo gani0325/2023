@@ -1,15 +1,17 @@
+'use strict';
+
 // 비밀번호를 암호화해서 저장하기
 const bcryptjs = require("bcryptjs");
 const userSesrvice = require("../services/user.services");
 
-exports.register = (rep, res, next) => {
+exports.register = (req, res, next) => {
     const {password} = req.body;
     // 솔트 + 비밀번호를 해시로 암호화
-    const salt = bcryptjs.genSalt(10);
+    const salt = bcryptjs.genSaltSync(10);
     // 비동기 방식 파라미터, 암호화에 사용되는 Salt
     req.body.password = bcryptjs.hashSync(password, salt);
 
-    userSesrvice.register(req.bdy, (error, result) => {
+    userSesrvice.register(req.body, (error, result) => {
         if(error) {
             return next(error);
         }
@@ -35,5 +37,10 @@ exports.login = (req, res, next) => {
 }
 
 exports.userProfile = (req, res, next) => {
-    return res.status(200).json({ message : "Authorized USER!" });
+    if (req.user) {
+        res.send(req.user);
+        next();
+    } else {
+       return res.status(401).json({ message: 'Invalid token' });
+    }
 };

@@ -1,3 +1,5 @@
+'use strict';
+
 const userController = require("../controllers/user.controller");
 
 const express = require("express");
