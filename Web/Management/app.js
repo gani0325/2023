@@ -8,7 +8,7 @@ dotenv.config();
 const auth = require("./middlewares/auth");
 const errors = require("./middlewares/errors");
 
-const unless = require("express-unless");
+const {unless} = require("express-unless");
 
 const app = express();
 
@@ -28,7 +28,9 @@ mongoose.connect(dbConfig.db, {
 );
 
 // authenticateToken : 미들웨어 - 보호된 경로에 액세스하기 전에 토큰을 인증
+
 auth.authenticateToken.unless = unless
+console.log(auth.authenticateToken.unless);
 app.use(auth.authenticateToken.unless({
     path: [
         { url: '/users/login', methods: ['POST']},
