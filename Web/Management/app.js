@@ -7,7 +7,6 @@ const dbConfig = require("./config/db.config");
 const dotenv = require('dotenv');
 dotenv.config();
 
-
 const auth = require("./middlewares/auth");
 const errors = require("./middlewares/errors");
 
