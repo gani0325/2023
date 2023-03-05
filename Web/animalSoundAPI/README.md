@@ -37,3 +37,8 @@
 ### POST(axios, fetch) : params, body
 - params : 변수 받음 (user/:id)
 - body 
+
+---
+## ⭐CORS
+- 서버의 응답이 왔을 때 브라우저가 요청한 Origin 과 응답한 헤더 Access-Control-Request-Headers 의 값을 비교하여 유효한 요청이라면 리소스를 응답
+- HTML의 요청을 응답 잘되도록
