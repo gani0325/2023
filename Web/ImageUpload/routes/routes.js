@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-// local~~/users 에서 응답
-router.get("/users", (req, res) => {
-    res.send("All users");
+// Home (ejs 와 연동)
+router.get("/", (req, res) => {
+  res.render("index", { title : "Home" });
 });
+
+router.get("/add", (req, res) => {
+  res.render("addUsers", { title : "Add users" });
+})
 
 module.exports = router;
