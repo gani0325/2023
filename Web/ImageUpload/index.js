@@ -35,11 +35,14 @@ app.use((req, res, next) => {
   // ejs 파일에서 사용하려면 'res.locals.변수명 = 값' 을 이용
   res.locals.message = req.session.message;
   delete req.session.message;
-  next();
+  next();         // 앱 내의 그 다음 미들웨어 함수가 호출
 });
 
 // set template engine
 app.set("view engine", "ejs");
+
+// router
+app.use("", require("./routes/routes"));
 
 app.get("/", (req, res) => {
   res.send("Hello World");
