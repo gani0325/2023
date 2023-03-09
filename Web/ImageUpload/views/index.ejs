@@ -3,40 +3,52 @@
   <div class="container">
     <div class="row my-4">
       <div class="col-lg-12">
-        <div class = "table-responsive">
-          <!-- 화면 크기에 따라 효과적으로 콘텐츠가 표시되도록 테이블을 조정 -->
-          <table class = "table table-striped">
-            <!-- 테이블의 열의 머리글인 행들의 집합 -->
-            <thead class = "table table-striped text-center">   
-              <tr class = "table-dark">
-                <th>ID</th>
-                <th>Image</th>
-                <th>Name</th>
-                <th>E-mail</th>
-                <th>Phone</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+        <!-- router 에 있는  locals.message 가져옴 -->
+        <!-- 
+        1. <% %> : EJS 에서 소스내 에서 실행되지만 보이지는 않는 태그
+        2. <%- %> : <% %> 태그와는 조금 다르게 HTML 코드를 날것(Raw)로 보임
+        3. <%= %> : 이스케이프 문자를 포함, 다른 페이지에서 받아온 데이터를 넣어줄 때
+       -->
+        <% if (message) { %>
+          <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+            <strong>
+              <%= message.message %>
+            </strong>
+          </div>
+          <% } %>
+            <div class="table-responsive">
+              <!-- 화면 크기에 따라 효과적으로 콘텐츠가 표시되도록 테이블을 조정 -->
+              <table class="table table-striped">
+                <!-- 테이블의 열의 머리글인 행들의 집합 -->
+                <thead class="table table-striped text-center">
+                  <tr class="table-dark">
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>E-mail</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td><img src = "" alt = ""></td>
-                <td>gani</td>
-                <td>gani@test.com</td>
-                <td>010-1234-1234</td>
-                <td>
-                  <a href = "" class = "text-success"><i class = "fas fa-edit fa-lg mx-1"></i></a>
-                  <a href = "" class = "text-danger"><i class = "fas fa-trash fa-lg mx-1"></i></a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><img src="" alt=""></td>
+                    <td>gani</td>
+                    <td>gani@test.com</td>
+                    <td>010-1234-1234</td>
+                    <td>
+                      <a href="" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                      <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
       </div>
     </div>
   </div>
 
   <%- include("layout/footer") %>
-
-  
