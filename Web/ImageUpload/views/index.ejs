@@ -18,34 +18,49 @@
           </div>
           <% } %>
             <div class="table-responsive">
-              <!-- 화면 크기에 따라 효과적으로 콘텐츠가 표시되도록 테이블을 조정 -->
-              <table class="table table-striped">
-                <!-- 테이블의 열의 머리글인 행들의 집합 -->
-                <thead class="table table-striped text-center">
-                  <tr class="table-dark">
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>E-mail</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td><img src="" alt=""></td>
-                    <td>gani</td>
-                    <td>gani@test.com</td>
-                    <td>010-1234-1234</td>
-                    <td>
-                      <a href="" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
-                      <a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <% if (users !="" ) { %>
+                <!-- 화면 크기에 따라 효과적으로 콘텐츠가 표시되도록 테이블을 조정 -->
+                <table class="table table-striped">
+                  <!-- 테이블의 열의 머리글인 행들의 집합 -->
+                  <thead class="table table-striped text-center">
+                    <tr class="table-dark">
+                      <th>ID</th>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>E-mail</th>
+                      <th>Phone</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <h1>왜 안돼?</h1>
+                    <% users?.forEach((row, index)=> { %>
+                      <h1>row</h1>
+                      <tr>
+                        <td>
+                          <%= index %>
+                        </td>
+                        <td><img src="<%= row.image %>" width="50" class="img-thumbnail"></td>
+                        <td>
+                          <%= row.name %>
+                        </td>
+                        <td>
+                          <%= row.email %>
+                        </td>
+                        <td>
+                          <%= row.phone %>
+                        </td>
+                        <td>
+                          <a href="/edit/<%= row._id %>" class="text-success"><i class="fas fa-edit fa-lg mx-1"></i></a>
+                          <a href="/delete/<%= row._id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a>
+                        </td>
+                      </tr>
+                      <% }) %>
+                  </tbody>
+                </table>
+                <% } else { %>
+                  <h1 class="text-center text-secondary mt-S">No users found in the databases!</h1>
+                  <% } %>
             </div>
       </div>
     </div>

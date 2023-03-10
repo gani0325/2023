@@ -41,9 +41,18 @@ router.post("/add", upload, (req, res) => {
   })
 });
 
-// Home (ejs 와 연동)
+// Get all users route
 router.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+  // Query를 이용할 때 프로미스를 리턴받고 싶다면 exec() 메서드를 이용
+  // find()를 실행하여 Query의 인스턴스를 리턴
+  User.find({}).then((err, users) => {
+    res.render("index", {
+      title: "Home Page",
+      users: users
+    });
+  }).catch((err) => {
+    res.json({ message: err.message });
+  });
 });
 
 router.get("/add", (req, res) => {

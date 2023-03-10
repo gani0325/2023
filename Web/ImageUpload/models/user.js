@@ -22,6 +22,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   }
-});
+}, { collection: 'node_crud' });
 
 module.exports = mongoose.model("User", userSchema);
