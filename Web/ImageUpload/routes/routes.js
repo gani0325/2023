@@ -48,7 +48,8 @@ router.get("/", (req, res) => {
   User.find({}).then((error, users) => {
     res.render("index", {
       title: "Home Page",
-      users: error
+      // 궁금 : 너 왜 error 잡히니?
+      users: error      
     });
   }).catch((error) => {
     res.json({ message: error.message });
