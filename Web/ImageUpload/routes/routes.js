@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/user");
 const multer = require("multer");
 const fs = require("fs");
+const { resourceLimits } = require("worker_threads");
 
 // image upload
 var storage = multer.diskStorage({
@@ -49,11 +50,11 @@ router.get("/", async (req, res) => {
   try {
     // Query를 이용할 때 프로미스를 리턴받고 싶다면 exec() 메서드를 이용
     // find()를 실행하여 Query의 인스턴스를 리턴
-      res.render("index", {
-        title: "Home Page",
-        // 궁금 : 너 왜 error 잡히니?
-        users: user
-      });
+    res.render("index", {
+      title: "Home Page",
+      // 궁금 : 너 왜 error 잡히니?
+      users: user
+    });
   } catch (error) {
     (error) => {
       res.json({ message: error.message });
@@ -85,7 +86,7 @@ router.get("/edit/:id", async (req, res) => {
 });
 
 // 3) Update user route
-router.post("/update/:id", upload , async (req, res) => {
+router.post("/update/:id", upload, async (req, res) => {
   let id = req.params.id;
   let new_image = "";
 
@@ -94,31 +95,47 @@ router.post("/update/:id", upload , async (req, res) => {
     try {
       // 동기 방식으로 파일 정보 읽기
       fs.readFileSync("./uploads/" + req.body.old_image);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   } else {
     req.image = req.body.old_image;
   }
-    
+
   //  첫 번째 인자는 업데이트 하고자 하는 문서의 id, 두 번째 인자는 업데이트 할 정보 혹은 내용
   const user = await User.findByIdAndUpdate(id, {
-    name : req.body.name,
-    email : req.body.email,
-    phone : req.body.phone,
-    image : new_image
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    image: new_image
   });
-  
+
   try {
     req.session.message = {
-      type : "success",
-      message :"User updated successfully!",
+      type: "success",
+      message: "User updated successfully!",
     };
     res.redirect("/");
   } catch (err) {
-    res.json({ message : err.message, type : "danger"});
+    res.json({ message: err.message, type: "danger" });
   }
-  
+});
+
+// 4) Delete user route
+router.get("/delete/:id", async (req, res) => {
+  let id = req.params.id;
+  // id 를 찾아서 지움
+  await User.findByIdAndRemove(id);
+
+  try {
+    req.session.message = {
+      type: "info",
+      message: "User deleted successfully!"
+    };
+    res.redirect("/");
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 });
 
 module.exports = router;
