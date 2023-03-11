@@ -38,6 +38,9 @@ app.use((req, res, next) => {
   next();         // 앱 내의 그 다음 미들웨어 함수가 호출
 });
 
+// uploads 폴더의 사진 html에 보이게 하기
+app.use(express.static("uploads"));
+
 // set template engine
 app.set("view engine", "ejs");
 

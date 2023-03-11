@@ -17,6 +17,7 @@
             </strong>
           </div>
           <% } %>
+
             <div class="table-responsive">
               <% if (users !="" ) { %>
                 <!-- 화면 크기에 따라 효과적으로 콘텐츠가 표시되도록 테이블을 조정 -->
@@ -33,10 +34,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <h1>왜 안돼?</h1>
                     <% users?.forEach((row, index)=> { %>
-                      <h1>row</h1>
-                      <tr>
+                      <tr class = "align-middle">
                         <td>
                           <%= index %>
                         </td>
