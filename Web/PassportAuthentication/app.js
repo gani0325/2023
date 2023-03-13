@@ -3,6 +3,7 @@ const app = express();
 
 // Routes
 app.use("/", require("./routes/index"));
+app.use("/users", require("./routes/user"));
 
 const PORT = process.env.PORT || 8000;
 
