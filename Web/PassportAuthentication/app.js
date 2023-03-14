@@ -1,7 +1,21 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express();
+
+// DB config
+const db = process.env.MONGODB_URI;
+
+// connect to Mongo
+mongoose.connect(process.env.MONGODB_URI,{ 
+  useNewUrlParser: true,    // useNewUrlParser : 에러 방지
+  useUnifiedTopology: true
+})
+  .then(()=> console.log("💚MongoDB Connected..."))
+  .catch(err => console.log(err));
+
 
 // ejs 미들웨어
 app.use(expressLayouts);
