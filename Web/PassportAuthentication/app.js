@@ -7,7 +7,9 @@ const app = express();
 app.use(expressLayouts);
 // express 의 view 엔진을 ejs 로 세팅
 app.set("view engine", "ejs");
-//  set 을 한 부분은 layout 폴더의 layout 파일을 사용하겠다는 선언
+// img
+app.use(express.static('public'));
+
 // Routes
 app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/user"));
