@@ -3,12 +3,12 @@ const router = express.Router();
 
 // Login Page
 router.get("/login", (req, res) => {
-    res.send("Welcome Login");
+    res.render("login");
 });
 
 // Register Page
 router.get("/register", (req, res) => {
-    res.send("Welcome register");
+    res.render("register");
 });
 
 module.exports = router;
