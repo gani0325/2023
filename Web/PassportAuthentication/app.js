@@ -9,19 +9,23 @@ const app = express();
 const db = process.env.MONGODB_URI;
 
 // connect to Mongo
-mongoose.connect(process.env.MONGODB_URI,{ 
+mongoose.connect(db,{ 
   useNewUrlParser: true,    // useNewUrlParser : 에러 방지
   useUnifiedTopology: true
 })
   .then(()=> console.log("💚MongoDB Connected..."))
   .catch(err => console.log(err));
 
-
 // ejs 미들웨어
 app.use(expressLayouts);
 // express 의 view 엔진을 ejs 로 세팅
 app.set("view engine", "ejs");
-// img
+
+// Bodyparser : express서버로 POST요청을 할 때 input태그의 value를 전달
+// URL-encoded 형식의 문자열로 넘어오기 때문에 객체로의 변환 필요
+app.use(express.urlencoded({ extended : false }));
+
+// muploads 폴더의 사진 html에 보이게 하기g
 app.use(express.static('public'));
 
 // Routes
