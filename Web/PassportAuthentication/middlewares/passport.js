@@ -36,7 +36,7 @@ module.exports = (passport) => {
   // done(null, user.id)로 세션을 초기화
   passport.serializeUser(function (user, cb) {
     process.nextTick(function () {
-      return cb(null, user.id);
+      return cb(null, user);
     });
   });
 

@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
 
 // dashboard
 router.get("/dashboard", ensureAuthenticated, (req, res) => {
-  // rednering 할 때 view의 파일 이름 써야됨
+  // rendering 할 때 view의 파일 이름 써야됨
   res.render("dashboard", {
     name : req.user.name
   });
