@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 // user model
 const User = require("../models/User");
 
@@ -41,7 +42,7 @@ router.post('/register', (req, res) => {
     });
   } else {
     // validation pass
-    User.findOne({ emil: email })
+    User.findOne({ email: email })
       .then(user => {
         // email을 찾았는데 만약에 user가 있다면
         if (user) {
@@ -60,7 +61,7 @@ router.post('/register', (req, res) => {
             email,
             password
           });
-          
+
           console.log(newUser);
 
           // hash password
@@ -72,7 +73,7 @@ router.post('/register', (req, res) => {
               console.log("hi");
               // save user
               newUser.save()
-                .then( user => {
+                .then(user => {
                   req.flash("success_msg", "You are now registered and can log in!!");
                   res.redirect('/users/login');
                 })
@@ -80,10 +81,31 @@ router.post('/register', (req, res) => {
             }))
         }
       });
-
-
   }
+});
 
+// Login handle
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", {
+    // 성공하면 메인으로
+    successRedirect : "/dashboard",
+    // 실패하면 다시 로그인
+    failureRedirect : "/users/login",
+    failureFlash : true
+  }) (req, res, next);
+});
+
+// Logout handle
+router.get('/logout', (req, res, next) => {
+  req.logOut(err => {
+    if (err) {
+      return next(err);
+    } else {
+      console.log('로그아웃됨.');
+      req.flash("success-msg", "You are logged out!");
+      res.redirect("/users/login");
+    }
+  });
 });
 
 module.exports = router;
