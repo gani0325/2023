@@ -3,10 +3,11 @@ const expressLayouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
 const flash = require("connect-flash");
 const session = require("express-session");
+const passport = require("passport");
+const app = express();
 
 require("dotenv").config();
-
-const app = express();
+require("./middlewares/passport")(passport);
 
 // DB config
 const db = process.env.MONGODB_URI;
@@ -39,6 +40,11 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+// passport 초기화 및 session 연결 미들웨어
+app.use(passport.authenticate('session'));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Connect flash
 // 한 번 출력되고 사라지는 메시지
 // session 보다 아래쪽에서 미들웨어를 설치
@@ -47,12 +53,14 @@ app.use(flash());
 
 // Global Vars
 app.use((req, res, next) => {
+  // res.locals : 뷰를 렌더링하는 기본 콘텍스트를 포함하는 객체
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
   next();
 });
 
-// muploads 폴더의 사진 html에 보이게 하기g
+// uploads 폴더의 사진 html에 보이게 하기g
 app.use(express.static('public'));
 
 // Routes
