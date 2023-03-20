@@ -1,8 +1,8 @@
-## <DCodeMania 의 유튜브를 참고해서 공부하며 작성하였습니다 :-)>
-### => CRUD App With Image Upload Using NodeJs, ExpressJs, MongoDB & EJS Templating Engine <br>
+## <DCodeMania 의 유튜브를 참고해서 공부하며 작성하였습니다 :-)> <br>
+=> CRUD App With Image Upload Using NodeJs, ExpressJs, MongoDB & EJS Templating Engine <br>
 
 
-##### 🥕 user의 프로필 목록에 생성하고 수정하고 삭제하고 MongoDB에 저장하기
+#### 🥕 user의 프로필 목록에 생성하고 수정하고 삭제하고 MongoDB에 저장하기
 **1) user 프로필 생성**
 ![image](https://user-images.githubusercontent.com/76983526/224485233-0626d4e3-d129-4dd9-ba06-13e3cd538031.png)
 
