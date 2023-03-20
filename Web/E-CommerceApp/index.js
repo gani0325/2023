@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const dbConnect = require("./config/dbConnect");
+const {notFound, errorHandler} = require("./middlewares/errorHandler");
 const app = express();
 require("dotenv").config();
 const PORT = process.env.PORT || 8000;
@@ -15,8 +16,10 @@ dbConnect();
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
-
 app.use("/api/user", authRouter);
+
+app.use(notFound);
+app.use(errorHandler);
 
 app.use("/", (req, res) => {
   res.send("hihi");
