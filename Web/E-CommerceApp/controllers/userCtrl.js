@@ -55,7 +55,18 @@ const loginCheck = asyncHandler(async (req, res) => {
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const getUser = await User.find();
-    res.json(getUser);
+    res.json({getUser});
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// get a single users
+const getAUsers = asyncHandler(async (req, res) => {
+  const {id} = req.params;
+  try {
+    const getUser = await User.findById(id);
+    res.json({getUser});
   } catch (error) {
     throw new Error(error);
   }
@@ -64,5 +75,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
 module.exports = {
   createUser,
   loginCheck,
-  getAllUsers
+  getAllUsers,
+  getAUsers
 };
