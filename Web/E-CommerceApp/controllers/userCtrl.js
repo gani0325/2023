@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
+const { generateToken } = require("../config/jwtToken");
 
 const createUser = asyncHandler(async (req, res) => {
   const { firstname, lastname, email, mobile, password } = req.body;
@@ -36,14 +37,32 @@ const loginCheck = asyncHandler(async (req, res) => {
   bcrypt.compare(password, findUser.password, (err, isMatch) => {
     if (err) throw err;
     if (isMatch) {
-      res.json(findUser);
+      res.json({
+        _id: findUser?._id,
+        firstname: findUser?.firstname,
+        lastname: findUser?.lastname,
+        email: findUser?.email,
+        mobile: findUser?.mobile,
+        token: generateToken(findUser?._id)
+      });
     } else {
       throw new Error("Email or Password is incorrect!");
     }
   });
 })
 
+// get all users
+const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const getUser = await User.find();
+    res.json(getUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
-  loginCheck
+  loginCheck,
+  getAllUsers
 };
