@@ -7,6 +7,7 @@ require("dotenv").config();
 const PORT = process.env.PORT || 8000;
 
 const authRouter = require("./routes/authRoute");
+const cookieParser = require("cookie-parser");
 
 // mongoDB
 dbConnect();
@@ -15,6 +16,7 @@ dbConnect();
 // URL-encoded 형식의 문자열로 넘어오기 때문에 객체로의 변환 필요
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use("/api/user", authRouter);
 

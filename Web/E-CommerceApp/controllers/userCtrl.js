@@ -3,7 +3,10 @@ const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const { validateMongodbID } = require("../utils/validateMongodbID");
+const { generateRefreshToken } = require("../config/refreshToken");
+const jwt = require("jsonwebtoken");
 
+// create a user
 const createUser = asyncHandler(async (req, res) => {
   const { firstname, lastname, email, mobile, password } = req.body;
   const findUser = await User.findOne({ email: email });
@@ -25,6 +28,7 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
+// login a user
 const loginCheck = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   // check if user exists or not
@@ -35,8 +39,20 @@ const loginCheck = asyncHandler(async (req, res) => {
     throw new Error("That email is not registered!");
   }
   // Match password (기존 비밀번호와 입력한 비밀번호 체크)
-  bcrypt.compare(password, findUser.password, (err, isMatch) => {
-    if (err) throw err;
+  bcrypt.compare(password, findUser.password, async (err, isMatch) => {
+    const refreshToken = await generateRefreshToken(findUser?._id);
+    const updateUser = await User.findByIdAndUpdate(
+      findUser._id, {
+      refreshToken: refreshToken,
+    }, {
+      new: true
+    }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
+
     if (isMatch) {
       res.json({
         _id: findUser?._id,
@@ -50,7 +66,36 @@ const loginCheck = asyncHandler(async (req, res) => {
       throw new Error("Email or Password is incorrect!");
     }
   });
-})
+});
+
+// Handle refresh token
+const handleRefreshToken = asyncHandler(async (req, res) => {
+  try {
+    const cookie = req.cookies;
+    // refresh token 없음!
+    if (!cookie?.refreshToken) {
+      throw new Error("No Refresh Token in cookies");
+    }
+    // refresh token 생성!
+    const refreshToken = cookie.refreshToken;
+    const user = await User.findOne({ refreshToken });
+
+    if (!user) {
+      throw new Error("No Refresh token present in db or not matched");
+    }
+    // refresh token을 secret key 기반으로 생성
+    jwt.verify(refreshToken, process.env.SECRET, (err, decoded) => {
+      if (err || user.id !== decoded.id) {
+        throw new Error("There is something wrong with refresh token");
+      }
+      // access Token 발급
+      const accessToken = generateToken(user?._id);
+      res.json({ accessToken });
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 // Update a user
 const updateUser = asyncHandler(async (req, res) => {
@@ -151,7 +196,7 @@ const unblockUser = asyncHandler(async (req, res) => {
       }
     );
     res.json({
-      message : "User unblocked"
+      message: "User unblocked"
     });
   } catch (error) {
     throw new Error(error);
@@ -167,5 +212,6 @@ module.exports = {
   deleteAUser,
   updateUser,
   blockUser,
-  unblockUser
+  unblockUser,
+  handleRefreshToken
 };
