@@ -11,7 +11,8 @@ const createProduct = asyncHandler(async (req, res) => {
   }
 });
 
-const getProduct = asyncHandler(async (req, res) => {
+// 상품 id 조회
+const getAProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const findProduct = await Product.findById(id);
@@ -19,8 +20,20 @@ const getProduct = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new Error(error);
   }
-})
+});
+
+// 모든 상품 조회
+const getAllProduct = asyncHandler(async (req, res) => {
+  try {
+    const getallProducts = await Product.find();
+    res.json(getallProducts);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProduct,
-  getProduct
+  getAProduct,
+  getAllProduct
 };
