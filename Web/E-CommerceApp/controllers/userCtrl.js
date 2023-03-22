@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
+const { validateMongodbID } = require("../utils/validateMongodbID");
 
 const createUser = asyncHandler(async (req, res) => {
   const { firstname, lastname, email, mobile, password } = req.body;
@@ -53,8 +54,9 @@ const loginCheck = asyncHandler(async (req, res) => {
 
 // Update a user
 const updateUser = asyncHandler(async (req, res) => {
-  console.log(req.user);
   const { _id } = req.user;
+  validateMongodbID(_id);
+
   try {
     const updateUser = await User.findByIdAndUpdate(
       _id,
@@ -87,6 +89,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // get a single users
 const getAUsers = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
+
   try {
     const getUser = await User.findById(id);
     res.json({ getUser });
@@ -98,6 +102,8 @@ const getAUsers = asyncHandler(async (req, res) => {
 // delete a user
 const deleteAUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
+
   try {
     const deleteAUser = await User.findByIdAndDelete(id);
     res.json({ deleteAUser });
@@ -109,8 +115,10 @@ const deleteAUser = asyncHandler(async (req, res) => {
 // block user
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
+
   try {
-    const block = await User.findOneAndUpdate(
+    const block = await User.findByIdAndUpdate(
       id,
       {
         isBlocked: true,
@@ -119,9 +127,10 @@ const blockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
-    res.json({
-      message : "User blocked"
-    });
+    res.json(block);
+    // res.json({
+    //   message : "User blocked"
+    // });
   } catch (error) {
     throw new Error(error);
   }
@@ -129,8 +138,10 @@ const blockUser = asyncHandler(async (req, res) => {
 
 const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
+
   try {
-    const unblock = await User.findOneAndUpdate(
+    const unblock = await User.findByIdAndUpdate(
       id,
       {
         isBlocked: false,
