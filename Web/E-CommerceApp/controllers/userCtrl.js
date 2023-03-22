@@ -49,8 +49,8 @@ const loginCheck = asyncHandler(async (req, res) => {
     }
     );
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000,
+      httpOnly: true,               // 웹 서버를 통해서만 cookie에 접근
+      maxAge: 72 * 60 * 60 * 1000,  // 현재 시간으로부터 만료 시간을 밀리초(millisecond) 단위로 설정
     });
 
     if (isMatch) {
@@ -97,6 +97,34 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
   }
 });
 
+// logout
+const logout = asyncHandler(async (req, res) => {
+  const cookie = req.cookies;
+  // refresh token 없음!
+  if (!cookie?.refreshToken) {
+    throw new Error("No Refresh Token in cookies");
+  }
+  const refreshToken = cookie.refreshToken;
+  const user = await User.findOne({refreshToken});
+  if (!user) {
+    res.clearCookie("refreshToken", {
+      httpOnly : true,  // 웹 서버를 통해서만 cookie에 접근
+      secure : true,    // HTTPS에서만 cookie를 사용
+    });
+    return res.sendStatus(204);   // forbidden
+  }
+  // token 삭제
+  await User.findOneAndUpdate(refreshToken, {
+    refreshToken : "",
+  });
+  // 쿠키 삭제
+  res.clearCookie("refreshToken", {
+    httpOnly : true,  // 웹 서버를 통해서만 cookie에 접근
+    secure : true,    // HTTPS에서만 cookie를 사용
+  });
+  return res.sendStatus(204)    // forbidden
+});
+
 // Update a user
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
@@ -119,7 +147,6 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
-
 
 // get all users
 const getAllUsers = asyncHandler(async (req, res) => {
@@ -213,5 +240,6 @@ module.exports = {
   updateUser,
   blockUser,
   unblockUser,
-  handleRefreshToken
+  handleRefreshToken,
+  logout
 };
