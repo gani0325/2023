@@ -65,12 +65,21 @@ const getAProduct = asyncHandler(async (req, res) => {
 
 // 모든 상품 조회
 const getAllProduct = asyncHandler(async (req, res) => {
-  try {    
-    // cateogry 같은 거 조회
-    const getallProducts = await Product.where("category").equals(
-      req.query.category
-    );
-    res.json(getallProducts);
+  try {
+    // 1) Filtering
+    const queryObj = {...req.query};
+    const excludeFields = ["page", "sort", "limit", "fields"];
+    excludeFields.forEach((el) => delete queryObj[el])
+    console.log(queryObj);
+    
+    // JSON.stringify : JavaScript 값이나 객체를 JSON 문자열로 변환
+    let queryStr = JSON.stringify(queryObj);
+    // Create operators ($gt, $gte, etc)
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
+    // JSON.parse : JSON 문자열을 인자로 받고 결과값으로 JavaScript 객체를 반환
+    const query = Product.find(JSON.parse(queryStr));
+    const product = await query;
+    res.json(product);
   } catch (error) {
     throw new Error(error);
   }
