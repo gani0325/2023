@@ -65,8 +65,11 @@ const getAProduct = asyncHandler(async (req, res) => {
 
 // 모든 상품 조회
 const getAllProduct = asyncHandler(async (req, res) => {
-  try {
-    const getallProducts = await Product.find(req.query);
+  try {    
+    // cateogry 같은 거 조회
+    const getallProducts = await Product.where("category").equals(
+      req.query.category
+    );
     res.json(getallProducts);
   } catch (error) {
     throw new Error(error);
