@@ -25,8 +25,23 @@ const updateProduct = asyncHandler(async (req, res) => {
       req.body, {
       new: true,
     });
-    console.log(updateProduct);
     res.json(updateProduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// 상품 삭제
+const deleteProduct = asyncHandler(async (req, res) => {
+  const {id} =req.params;
+  try {
+    if (req.body.title) {
+      // slugify : 텍스트를 url 주소로 변환해주는 라이브러리
+      // slug : 이미 얻은 데이터를 사용하여 유효한 URL을 생성 (URL과 의미있는 이름을 사용)
+      req.body.slug = slugify(req.body.title);
+    }
+    const deleteProduct = await Product.findOneAndDelete(id);
+    res.json(deleteProduct);
   } catch (error) {
     throw new Error(error);
   }
@@ -56,6 +71,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
 module.exports = {
   createProduct,
   updateProduct,
+  deleteProduct,
   getAProduct,
   getAllProduct
 };
