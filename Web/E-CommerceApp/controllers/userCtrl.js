@@ -232,13 +232,10 @@ const updatePassword = asyncHandler(async (req, res) => {
   const {password} = req.body;
   validateMongodbID(_id);
   const user = await User.findById(_id);
-  console.log(req.user);
   
   if (password) {
     user.password = password;
-
     const updatePassword = await user.save();
-    //console.log(updatePassword);
     res.json(updatePassword);
   } else {
     res.json(user);
