@@ -5,22 +5,18 @@ const { generateToken } = require("../config/jwtToken");
 const { validateMongodbID } = require("../utils/validateMongodbID");
 const { generateRefreshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 // create a user
 const createUser = asyncHandler(async (req, res) => {
-  const { firstname, lastname, email, mobile, password } = req.body;
+  const email = req.body.email;
   const findUser = await User.findOne({ email: email });
-
+  console.log(findUser)
   // email이 db에 없다면
   if (!findUser) {
-    // Create a new User
-    // 1) 우선 비밀번호 해쉬화(암호화)
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // 2) 새 User 정보 만들기
-    const newUser = await User.create({
-      firstname, lastname, email, mobile, password: hashedPassword
-    });
-
+    // 새 User 정보 만들기
+    const newUser = await User.create(req.body);
+    console.log(newUser);
     res.json(newUser);
   } else {
     // User already exists
@@ -105,22 +101,22 @@ const logout = asyncHandler(async (req, res) => {
     throw new Error("No Refresh Token in cookies");
   }
   const refreshToken = cookie.refreshToken;
-  const user = await User.findOne({refreshToken});
+  const user = await User.findOne({ refreshToken });
   if (!user) {
     res.clearCookie("refreshToken", {
-      httpOnly : true,  // 웹 서버를 통해서만 cookie에 접근
-      secure : true,    // HTTPS에서만 cookie를 사용
+      httpOnly: true,  // 웹 서버를 통해서만 cookie에 접근
+      secure: true,    // HTTPS에서만 cookie를 사용
     });
     return res.sendStatus(204);   // forbidden
   }
   // token 삭제
   await User.findOneAndUpdate(refreshToken, {
-    refreshToken : "",
+    refreshToken: "",
   });
   // 쿠키 삭제
   res.clearCookie("refreshToken", {
-    httpOnly : true,  // 웹 서버를 통해서만 cookie에 접근
-    secure : true,    // HTTPS에서만 cookie를 사용
+    httpOnly: true,  // 웹 서버를 통해서만 cookie에 접근
+    secure: true,    // HTTPS에서만 cookie를 사용
   });
   return res.sendStatus(204)    // forbidden
 });
@@ -230,6 +226,24 @@ const unblockUser = asyncHandler(async (req, res) => {
   }
 });
 
+// 비밀번호 재생성
+const updatePassword = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const {password} = req.body;
+  validateMongodbID(_id);
+  const user = await User.findById(_id);
+  console.log(req.user);
+  
+  if (password) {
+    user.password = password;
+
+    const updatePassword = await user.save();
+    //console.log(updatePassword);
+    res.json(updatePassword);
+  } else {
+    res.json(user);
+  }
+});
 
 module.exports = {
   createUser,
@@ -241,5 +255,6 @@ module.exports = {
   blockUser,
   unblockUser,
   handleRefreshToken,
-  logout
+  logout,
+  updatePassword
 };
