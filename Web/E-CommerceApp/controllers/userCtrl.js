@@ -258,7 +258,7 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
     const token = await user.createPasswordResetToken();
     await user.save();
 
-    const resetURL = "Plz, follow this link to reset your password! This is vaild till 10 minutes. <a href='http://localhost:3000/api/user/reset-password/${token}'>Click here</>"
+    const resetURL = `Plz, follow this link to reset your password! This is vaild till 10 minutes. <a href='http://localhost:3000/api/user/reset-password/${token}'>Click here</>`
     const data = {
       to: email,
       text: "Hi User!",
