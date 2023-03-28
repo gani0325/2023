@@ -6,6 +6,7 @@ const { validateMongodbID } = require("../utils/validateMongodbID");
 const { generateRefreshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const { sendEmail } = require("../controllers/emailCtrl");
 
 // create a user
 const createUser = asyncHandler(async (req, res) => {
@@ -229,16 +230,45 @@ const unblockUser = asyncHandler(async (req, res) => {
 // 비밀번호 재생성
 const updatePassword = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const {password} = req.body;
+  const { password } = req.body;
   validateMongodbID(_id);
   const user = await User.findById(_id);
-  
+
   if (password) {
     user.password = password;
     const updatePassword = await user.save();
     res.json(updatePassword);
   } else {
     res.json(user);
+  }
+});
+
+// 비밀번호 찾기
+const forgotPasswordToken = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  // 사용자가 없다면
+  if (!user) {
+    throw new Error("User not found with this email");
+  }
+
+  try {
+    // user schema 에서 다시 토큰 재발급
+    const token = await user.createPasswordResetToken();
+    await user.save();
+
+    const resetURL = "Plz, follow this link to reset your password! This is vaild till 10 minutes. <a href='http://localhost:3000/api/user/reset-password/${token}'>Click here</>"
+    const data = {
+      to: email,
+      text: "Hi User!",
+      subject: "Forgot password link",
+      html: resetURL
+    }
+    sendEmail(data);
+    res.json(token);
+  } catch (error) {
+    throw new Error(error);
   }
 });
 
@@ -253,5 +283,6 @@ module.exports = {
   unblockUser,
   handleRefreshToken,
   logout,
-  updatePassword
+  updatePassword,
+  forgotPasswordToken
 };
