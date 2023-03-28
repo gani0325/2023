@@ -272,6 +272,29 @@ const forgotPasswordToken = asyncHandler(async (req, res) => {
   }
 });
 
+// 비밀번호 재생성
+const resetPassword = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+  const { token } = req.params;
+  const hasedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  console.log(password);
+  const user = await User.findOne({
+    passwordResetToken: hasedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new Error("Token Expired! Plz try again here");
+  }
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+  res.json(user);
+});
+
 module.exports = {
   createUser,
   loginCheck,
@@ -284,5 +307,6 @@ module.exports = {
   handleRefreshToken,
   logout,
   updatePassword,
-  forgotPasswordToken
+  forgotPasswordToken,
+  resetPassword
 };
