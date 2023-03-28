@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
+const { validateMongodbID } = require("../utils/validateMongodbID");
 
 // 상품 등록
 const createProduct = asyncHandler(async (req, res) => {
@@ -20,6 +21,7 @@ const createProduct = asyncHandler(async (req, res) => {
 // 상품 수정
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
   try {
     if (req.body.title) {
       // slugify : 텍스트를 url 주소로 변환해주는 라이브러리
@@ -39,6 +41,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 // 상품 삭제
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
   try {
     if (req.body.title) {
       // slugify : 텍스트를 url 주소로 변환해주는 라이브러리
@@ -55,6 +58,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // 상품 id 조회
 const getAProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbID(id);
   try {
     const findProduct = await Product.findById(id);
     res.json(findProduct);
