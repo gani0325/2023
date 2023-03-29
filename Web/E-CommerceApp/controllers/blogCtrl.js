@@ -27,8 +27,29 @@ const updateBlog = asyncHandler(async (req, res) => {
   }
 });
 
+// 블로그 조회하기
+const getBlog = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongodbID(id);
+  try {
+    const getBlog = await Blog.findById(id);
+    const updateViews = await Blog.findByIdAndUpdate(
+      id,
+      {
+        $inc: { numViews: 1 },    // 조회할 때마다 numViews 올라감~
+      },
+      { new: true }
+    );
+    res.json(updateViews);
+  }
+  catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createBlog,
   updateBlog,
+  getBlog,
 
 }
