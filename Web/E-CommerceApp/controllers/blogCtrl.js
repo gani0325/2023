@@ -47,9 +47,21 @@ const getBlog = asyncHandler(async (req, res) => {
   }
 });
 
+// 모든 블로그 조회하기
+const getAllBlogs = asyncHandler(async (req, res) => {
+  try {
+    const getAllBlogs = await Blog.find();
+    res.json(getAllBlogs);
+  }
+  catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createBlog,
   updateBlog,
   getBlog,
+  getAllBlogs
 
 }
