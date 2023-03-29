@@ -58,10 +58,24 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   }
 });
 
+// 블로그 삭제하기
+const deleteBlog = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongodbID(id);
+  try {
+    const deleteBlog = await Blog.findByIdAndDelete(id);
+    res.json(deleteBlog);
+  }
+  catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createBlog,
   updateBlog,
   getBlog,
-  getAllBlogs
+  getAllBlogs,
+  deleteBlog
 
 }
