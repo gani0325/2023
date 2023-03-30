@@ -9,8 +9,8 @@ const prodCategorySchema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
-  collection: 'category'
+  collection: 'prodCategory'
 });
 
-const Category = mongoose.model("Category", prodCategorySchema);
-module.exports = Category;
+const prodCategory = mongoose.model("prodCategory", prodCategorySchema);
+module.exports = prodCategory;
