@@ -1,11 +1,11 @@
-const Category = require("../models/ProdCategory");
+const prodCategorySchema = require("../models/ProdCategory");
 const asyncHandler = require("express-async-handler");
 const { validateMongodbID } = require("../utils/validateMongodbID");
 
 // 카테고리 생성하기
 const createCategory = asyncHandler(async (req, res) => {
   try {
-    const newCategory = await Category.create(req.body);
+    const newCategory = await prodCategorySchema.create(req.body);
     res.json(newCategory);
   }
   catch (error) {
@@ -18,7 +18,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
   try {
-    const updateCategory = await Category.findByIdAndUpdate(id, req.body, {
+    const updateCategory = await prodCategorySchema.findByIdAndUpdate(id, req.body, {
       new: true,
     });
     res.json(updateCategory);
@@ -33,7 +33,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
   try {
-    const deleteCategory = await Category.findByIdAndDelete(id);
+    const deleteCategory = await prodCategorySchema.findByIdAndDelete(id);
     res.json(deleteCategory);
   }
   catch (error) {
@@ -46,7 +46,7 @@ const getaCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
   try {
-    const getaCategory = await Category.findById(id);
+    const getaCategory = await prodCategorySchema.findById(id);
     res.json(getaCategory);
   }
   catch (error) {
@@ -57,7 +57,7 @@ const getaCategory = asyncHandler(async (req, res) => {
 // 모든 카테고리 조회하기
 const getallCategory = asyncHandler(async (req, res) => {
   try {
-    const getallCategory = await Category.find();
+    const getallCategory = await prodCategorySchema.find();
     res.json(getallCategory);
   }
   catch (error) {
