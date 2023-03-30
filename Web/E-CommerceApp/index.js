@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 8000;
 const authRouter = require("./routes/authRoute");
 const productRouter = require("./routes/productRoute");
 const blogRouter = require("./routes/blogRoute");
-const categoryRouter = require("./routes/categoryRoute");
+const prodCategoryRouter = require("./routes/prodCategoryRoute");
 const cookieParser = require("cookie-parser");
 
 // mongoDB
@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use("/api/user", authRouter);
 app.use("/api/product", productRouter);
 app.use("/api/blog", blogRouter);
-app.use("/api/category", categoryRouter);
+app.use("/api/category", prodCategoryRouter);
 
 app.use(notFound);
 app.use(errorHandler);
