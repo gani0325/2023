@@ -13,6 +13,22 @@ const createCategory = asyncHandler(async (req, res) => {
   }
 });
 
+// 카테고리 수정하기
+const updateCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updateCategory = await Category.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.json(updateCategory);
+  }
+  catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createCategory,
+  updateCategory,
+
 }
