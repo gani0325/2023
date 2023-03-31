@@ -2,7 +2,7 @@ const prodCategorySchema = require("../models/ProdCategory");
 const asyncHandler = require("express-async-handler");
 const { validateMongodbID } = require("../utils/validateMongodbID");
 
-// 카테고리 생성하기
+// 상품 카테고리 생성하기
 const createCategory = asyncHandler(async (req, res) => {
   try {
     const newCategory = await prodCategorySchema.create(req.body);
@@ -13,7 +13,7 @@ const createCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 카테고리 수정하기
+// 상품 카테고리 수정하기
 const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -28,7 +28,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 카테고리 삭제하기
+// 상품 카테고리 삭제하기
 const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -41,7 +41,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 카테고리 조회하기
+// 상품 카테고리 조회하기
 const getaCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -54,7 +54,7 @@ const getaCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 모든 카테고리 조회하기
+// 모든 상품 카테고리 조회하기
 const getallCategory = asyncHandler(async (req, res) => {
   try {
     const getallCategory = await prodCategorySchema.find();

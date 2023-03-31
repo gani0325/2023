@@ -2,7 +2,7 @@ const blogCategorySchema = require("../models/BlogCategory");
 const asyncHandler = require("express-async-handler");
 const { validateMongodbID } = require("../utils/validateMongodbID");
 
-// 블로그 생성하기
+// 블로그 카테고리 생성하기
 const createCategory = asyncHandler(async (req, res) => {
   try {
     const newCategory = await blogCategorySchema.create(req.body);
@@ -13,7 +13,7 @@ const createCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 블로그 수정하기
+// 블로그 카테고리 수정하기
 const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -28,7 +28,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 블로그 삭제하기
+// 블로그 카테고리 삭제하기
 const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -41,7 +41,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 블로그 조회하기
+// 블로그 카테고리 조회하기
 const getaCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -54,7 +54,7 @@ const getaCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// 모든 블로그 조회하기
+// 모든 블로그 카테고리 조회하기
 const getallCategory = asyncHandler(async (req, res) => {
   try {
     const getallCategory = await blogCategorySchema.find();
