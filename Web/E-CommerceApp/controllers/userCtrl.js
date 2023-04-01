@@ -12,12 +12,11 @@ const { sendEmail } = require("../controllers/emailCtrl");
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const findUser = await User.findOne({ email: email });
-  console.log(findUser)
+
   // email이 db에 없다면
   if (!findUser) {
     // 새 User 정보 만들기
     const newUser = await User.create(req.body);
-    console.log(newUser);
     res.json(newUser);
   } else {
     // User already exists
