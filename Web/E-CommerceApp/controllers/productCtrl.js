@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const { validateMongodbID } = require("../utils/validateMongodbID");
@@ -59,6 +60,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 const getAProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
+  
   try {
     const findProduct = await Product.findById(id);
     res.json(findProduct);
@@ -120,10 +122,42 @@ const getAllProduct = asyncHandler(async (req, res) => {
   }
 });
 
+// 위시리스트에 상품 넣기
+const addTowishList = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { _id } = req.user;
+  const { prodId } = req.body;
+  console.log(prodId);
+  try {
+    const user = await User.findById(_id);
+    const alreadyadded = user.wishList.find((id) => id.toString() === prodId);
+
+    if (alreadyadded) {
+      let user = await User.findByIdAndUpdate(_id, {
+        $pull: { wishList: prodId },
+      }, {
+        new: true,
+      });
+      res.json(user);
+    } else {
+      let user = await User.findByIdAndUpdate(_id, {
+        $push: { wishList: prodId },
+      }, {
+        new: true,
+      });
+      res.json(user);
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
   getAProduct,
-  getAllProduct
+  getAllProduct,
+  addTowishList,
+
 };
