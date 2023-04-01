@@ -169,20 +169,35 @@ const rating = asyncHandler(async (req, res) => {
       }, {
         new: true
       });
-      res.json(updateRating);
+      // res.json(updateRating);
     } else {
       const rateProduct = await Product.findByIdAndUpdate(
         prodId,
         {
           $push: {
             ratings: {
-              start: star,
+              star: star,
               postedby: _id,
             },
           },
         });
-      res.json(rateProduct);
+      // res.json(rateProduct);
     }
+
+    // 총 별점 평균내기
+    const getallratings = await Product.findById(prodId);
+    let totalRating = getallratings.ratings.length;   // 개수
+    let ratingsum = getallratings.ratings
+      .map((item) => item.star)
+      .reduce((prev, curr) => prev + curr, 0);
+    let actualRating = Math.round(ratingsum / totalRating);
+    let finalproduct = await Product.findByIdAndUpdate(
+      prodId, {
+        totalrating: actualRating,
+    }, {
+      new: true
+    });
+    res.json(finalproduct);
   } catch (error) {
     throw new Error(error);
   }
