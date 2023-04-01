@@ -60,7 +60,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 const getAProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
-  
+
   try {
     const findProduct = await Product.findById(id);
     res.json(findProduct);
@@ -124,10 +124,8 @@ const getAllProduct = asyncHandler(async (req, res) => {
 
 // 위시리스트에 상품 넣기
 const addTowishList = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const { _id } = req.user;
   const { prodId } = req.body;
-  console.log(prodId);
   try {
     const user = await User.findById(_id);
     const alreadyadded = user.wishList.find((id) => id.toString() === prodId);
@@ -152,6 +150,44 @@ const addTowishList = asyncHandler(async (req, res) => {
   }
 });
 
+// 상품 별점 매기기
+const rating = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { star, prodId } = req.body;
+
+  try {
+    const product = await Product.findById(prodId);
+    let alreadyRated = product.ratings.find(
+      (userId) => userId.toString() === _id.toString());
+
+    if (alreadyRated) {
+      const updateRating = await Product.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRated },
+        }, {
+        $set: { "ratings.$.star": star },
+      }, {
+        new: true
+      });
+      res.json(updateRating);
+    } else {
+      const rateProduct = await Product.findByIdAndUpdate(
+        prodId,
+        {
+          $push: {
+            ratings: {
+              start: star,
+              postedby: _id,
+            },
+          },
+        });
+      res.json(rateProduct);
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -159,5 +195,5 @@ module.exports = {
   getAProduct,
   getAllProduct,
   addTowishList,
-
+  rating,
 };
