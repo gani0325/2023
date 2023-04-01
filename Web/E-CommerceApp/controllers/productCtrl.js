@@ -153,7 +153,7 @@ const addTowishList = asyncHandler(async (req, res) => {
 // 상품 별점 매기기
 const rating = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { star, prodId } = req.body;
+  const { star, comment, prodId } = req.body;
 
   try {
     const product = await Product.findById(prodId);
@@ -165,7 +165,7 @@ const rating = asyncHandler(async (req, res) => {
         {
           ratings: { $elemMatch: alreadyRated },
         }, {
-        $set: { "ratings.$.star": star },
+        $set: { "ratings.$.star": star, "ratings.$.comment": comment },
       }, {
         new: true
       });
@@ -177,6 +177,7 @@ const rating = asyncHandler(async (req, res) => {
           $push: {
             ratings: {
               star: star,
+              comment: comment,
               postedby: _id,
             },
           },
