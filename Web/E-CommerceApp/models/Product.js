@@ -30,7 +30,7 @@ const ProductSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    required : true,
+    required: true,
   },
   sold: {
     type: Number,
@@ -46,7 +46,11 @@ const ProductSchema = new mongoose.Schema({
   ratings: [{
     star: Number,
     postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  }]
+  }],
+  totalrating: {
+    type: String,
+    default: 0,
+  },
 }, {
   timestamps: true,
   collection: 'product'
