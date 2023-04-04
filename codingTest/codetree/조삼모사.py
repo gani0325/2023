@@ -23,18 +23,16 @@ ans = INT_MAX
 
 # 아침과 저녁 간의 힘듦의 차이
 def calc():
-    morning_sum = sum([
-        p[i][j]  
-        for i in range(n)
-        for j in range(n)
-        if not evening[i] and not evening[j]
-    ])
-    evening_sum = sum([
-        p[i][j]  
-        for i in range(n)
-        for j in range(n)
-        if evening[i] and evening[j]
-    ])
+    morning_sum = 0
+    for i in range(n) :
+        for j in range(n) :
+            if not evening[i] and not evening[j] :
+                morning_sum += p[i][j]
+    evening_sum = 0
+    for i in range(n) :
+        for j in range(n) :
+            if evening[i] and evening[j] :
+                evening_sum += p[i][j]
     return abs(morning_sum - evening_sum)
 
 def find_min(curr_idx, cnt):
