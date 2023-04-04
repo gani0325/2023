@@ -18,7 +18,7 @@ BLUE = 4
 red_pos = (0, 0)
 blue_pos = (0, 0)
 # 편의상 절대 맵 안에서는 될 수 없는 위치인 (n, m)로 설정
-OUT_OF_MAP = (N, M);
+OUT_OF_MAP = (N, M)
 
 ans = 11
 
