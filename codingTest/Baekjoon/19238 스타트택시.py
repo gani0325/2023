@@ -93,6 +93,7 @@ def customer_dist(graph, t_x, t_y):
             g[nx][ny] = g[x][y] + 1
             visited[nx][ny] = True
             queue.append((nx, ny))
+    # 거리로 가득찬 graph!
     return g
 
 
@@ -121,18 +122,22 @@ while True:
     else:
         # 거리 내림차순 - 행 내림차순 - 열 내림차순
         move.sort(key=lambda x: (x[0], x[1], x[2]))
-        # 손님 - 도착지
+        # 고객 위치 까지 연료 부족하면 중단
         if move[0][0] > k:
             k = -1
             break
         else:
+            # 고객 위치의 거리 만큼 연료 차감
             k -= move[0][0]
+            # 택시위치 = 고객현재 위치, 고객 목적지 위치
             t_x, t_y, a, b = move[0][1:]
+            # 마지막 목적지까지의 택시 거리 graph
             end = customer_dist(graph, t_x, t_y)
+            # 목적지 까지의 거리
             d = end[a][b]
 
             if d < 0:
-                # 연료는 한 칸 이동할 때마다 1만큼 소모
+                # 
                 k = -1
                 break
             # 거리만큼 연료 빼기
