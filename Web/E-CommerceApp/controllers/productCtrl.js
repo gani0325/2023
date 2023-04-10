@@ -3,6 +3,7 @@ const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const { validateMongodbID } = require("../utils/validateMongodbID");
+const cloudinaryUploadImg = require("../utils/cloudinary");
 
 // 상품 등록
 const createProduct = asyncHandler(async (req, res) => {
@@ -194,7 +195,7 @@ const rating = asyncHandler(async (req, res) => {
     let actualRating = Math.round(ratingsum / totalRating);
     let finalproduct = await Product.findByIdAndUpdate(
       prodId, {
-        totalrating: actualRating,
+      totalrating: actualRating,
     }, {
       new: true
     });
@@ -202,6 +203,36 @@ const rating = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new Error(error);
   }
+});
+
+const uploadImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongodbID(id);
+  try {
+    const uploader = (path) => cloudinaryUploadImg(path, "images");
+    const urls = [];
+    const files = req.files;
+    for (const file of files) {
+      const { path } = files;
+      const newpath = await uploader(path);
+      urlspush(newpath);
+    }
+    const findProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        images: urls.map((file) => {
+          return file;
+        }),
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(findProduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+
 });
 
 module.exports = {
@@ -212,4 +243,5 @@ module.exports = {
   getAllProduct,
   addTowishList,
   rating,
+  uploadImages
 };
