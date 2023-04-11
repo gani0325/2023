@@ -9,6 +9,7 @@ const { generateRefreshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendEmail } = require("../controllers/emailCtrl");
+const Coupon = require("../models/Coupon");
 
 // create a user
 const createUser = asyncHandler(async (req, res) => {
@@ -424,7 +425,7 @@ const getUserCart = asyncHandler(async (req, res) => {
 // 장바구니 삭제하기
 const emptyCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  
+
   validateMongodbID(_id);
 
   try {
@@ -435,6 +436,30 @@ const emptyCart = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new Error(error)
   }
+});
+
+// 쿠폰 적용하기
+const applyCoupon = asyncHandler(async (req, res) => {
+  const { coupon } = req.body;
+  const { _id } = req.user;
+  validateMongodbID(_id);
+  const validCoupon = await Coupon.findOne({ name: coupon });
+  if (validCoupon === null) {
+    throw new Error("Invalid Coupon");
+  }
+  const user = await User.findOne({ _id });
+
+  let { products, cartTotal } = await Cart.findOne({
+    orderby: user._id,
+  }).populate("products.product");
+
+  let totalAfterDiscount = (cartTotal - (cartTotal * validCoupon.discount) / 100).toFixed(2);
+  await Cart.findOneAndUpdate(
+    { orderby: user._id },
+    { totalAfterDiscount },
+    { new: true }
+  );
+  res.json(totalAfterDiscount);
 });
 
 module.exports = {
@@ -456,5 +481,6 @@ module.exports = {
   saveAddress,
   userCart,
   getUserCart,
-  emptyCart
+  emptyCart,
+  applyCoupon
 };
