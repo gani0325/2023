@@ -64,6 +64,47 @@ const loginCheck = asyncHandler(async (req, res) => {
   });
 });
 
+// admin login
+const loginAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // check if user exists or not
+  const findAdmin = await User.findOne({ email: email });
+  // role이 admin이냐!
+  if(findAdmin.role !== "admin") throw new Error("Not Authorised");
+  // admin 가 없다면 done
+  if (!findAdmin) {
+    throw new Error("That email is not registered!");
+  }
+  // Match password (기존 비밀번호와 입력한 비밀번호 체크)
+  bcrypt.compare(password, findAdmin.password, async (err, isMatch) => {
+    const refreshToken = await generateRefreshToken(findAdmin?._id);
+    const updateUser = await User.findByIdAndUpdate(
+      findAdmin._id, {
+      refreshToken: refreshToken,
+    }, {
+      new: true
+    }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,               // 웹 서버를 통해서만 cookie에 접근
+      maxAge: 72 * 60 * 60 * 1000,  // 현재 시간으로부터 만료 시간을 밀리초(millisecond) 단위로 설정
+    });
+
+    if (isMatch) {
+      res.json({
+        _id: findAdmin?._id,
+        firstname: findAdmin?.firstname,
+        lastname: findAdmin?.lastname,
+        email: findAdmin?.email,
+        mobile: findAdmin?.mobile,
+        token: generateToken(findAdmin?._id)
+      });
+    } else {
+      throw new Error("Email or Password is incorrect!");
+    }
+  });
+});
+
 // Handle refresh token
 const handleRefreshToken = asyncHandler(async (req, res) => {
   try {
@@ -297,6 +338,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 module.exports = {
   createUser,
   loginCheck,
+  loginAdmin,
   getAllUsers,
   getAUsers,
   deleteAUser,
