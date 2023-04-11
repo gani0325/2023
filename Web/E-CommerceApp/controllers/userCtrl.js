@@ -511,15 +511,38 @@ const createOrder = asyncHandler(async (req, res) => {
 });
 
 // 주문한거 조회
-const getOrders = asyncHandler(async(req, res)=> {
-  const {_id} = req.user;
+const getOrders = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
   validateMongodbID(_id);
 
   try {
-    const userorders = await Order.findOne({orderby:_id})
+    const userorders = await Order.findOne({ orderby: _id })
       .populate("products.product")
       .exec();
     res.json(userorders);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// 주문 상태 확인하기
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+  validateMongodbID(id);
+
+  try {
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      id,
+      {
+        orderStatus: status,
+        paymentIntent: {
+          status: status,
+        },
+      },
+      { new: true }
+    );
+    res.json(updateOrderStatus);
   } catch (error) {
     throw new Error(error);
   }
@@ -547,5 +570,6 @@ module.exports = {
   emptyCart,
   applyCoupon,
   createOrder,
-  getOrders
+  getOrders,
+  updateOrderStatus
 };
