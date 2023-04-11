@@ -368,6 +368,7 @@ const getWishlist = asyncHandler(async (req, res) => {
   }
 });
 
+// 장바구니에 상품 넣기
 const userCart = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { cart } = req.body;
@@ -405,6 +406,19 @@ const userCart = asyncHandler(async (req, res) => {
   }
 });
 
+// 장바구니 조회하기
+const getUserCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongodbID(_id);
+
+  try {
+    const cart = await Cart.findOne({ orderby: _id });
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error)
+  }
+});
+
 module.exports = {
   createUser,
   loginCheck,
@@ -422,5 +436,6 @@ module.exports = {
   resetPassword,
   getWishlist,
   saveAddress,
-  userCart
+  userCart,
+  getUserCart
 };
