@@ -14,7 +14,7 @@ router.post("/admin-login", loginAdmin);
 router.get("/all-users", getAllUsers);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);
-
+router.get("/wishlist", authMiddleware, getWishlist);
 router.get("/:id", authMiddleware, isAdmin, getAUsers);
 
 router.delete("/:id", deleteAUser);
