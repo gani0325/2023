@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Product = require("../models/Product");
+const Cart = require("../models/Cart");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
@@ -70,7 +72,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
   // check if user exists or not
   const findAdmin = await User.findOne({ email: email });
   // role이 admin이냐!
-  if(findAdmin.role !== "admin") throw new Error("Not Authorised");
+  if (findAdmin.role !== "admin") throw new Error("Not Authorised");
   // admin 가 없다면 done
   if (!findAdmin) {
     throw new Error("That email is not registered!");
@@ -356,10 +358,48 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 const getWishlist = asyncHandler(async (req, res) => {
-  const {_id} = req.user;
+  const { _id } = req.user;
+  console.log(_id);
   try {
     const findUser = await User.findById(_id).populate("wishList");
     res.json(findUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+const userCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { cart } = req.body;
+
+  validateMongodbID(_id);
+  try {
+    let products = []
+    const user = await User.findById(_id);
+    // check if user already have product in cart
+    const alreadyExistCart = await Cart.findOne({ orderby: user._id });
+    if (alreadyExistCart) {
+      alreadyExistCart.remove();
+    }
+    for (let i = 0; i < cart.length; i++) {
+      let object = {};
+      object.product = cart[i]._id;
+      object.count = cart[i].count;
+      object.color = cart[i].color;
+      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
+      object.price = getPrice.price;
+      products.push(object);
+    }
+    let cartTotal = 0;
+    for (let i = 0; i < products.length; i++) {
+      cartTotal = cartTotal + products[i].price * products[i].count;
+    }
+    let newCart = await new Cart({
+      products,
+      cartTotal,
+      orderby: user?._id,
+    }).save();
+    res.json(newCart);
   } catch (error) {
     throw new Error(error);
   }
@@ -381,5 +421,6 @@ module.exports = {
   forgotPasswordToken,
   resetPassword,
   getWishlist,
-  saveAddress
+  saveAddress,
+  userCart
 };
