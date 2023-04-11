@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
+const Order = require("../models/Order");
+const Coupon = require("../models/Coupon");
+
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
@@ -9,7 +12,7 @@ const { generateRefreshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendEmail } = require("../controllers/emailCtrl");
-const Coupon = require("../models/Coupon");
+const uniqid = require("uniqid");
 
 // create a user
 const createUser = asyncHandler(async (req, res) => {
@@ -462,6 +465,51 @@ const applyCoupon = asyncHandler(async (req, res) => {
   res.json(totalAfterDiscount);
 });
 
+// 주문 하기
+const createOrder = asyncHandler(async (req, res) => {
+  const { COD, couponApplied } = req.body;
+  const { _id } = req.user;
+  validateMongodbID(_id);
+
+  try {
+    if (!COD) throw new Error("Create cash order failed");
+    const user = await User.findById(_id);
+    let userCart = await Cart.findOne({ orderby: user._id });
+    let finalAmount = 0;
+    if (couponApplied && userCart.totalAfterDiscount) {
+      finalAmount = userCart.totalAfterDiscount * 100;
+    } else {
+      finalAmount = userCart.cartTotal * 100;
+    }
+
+    let newOrder = await new Order({
+      products: userCart.products,
+      paymentIntent: {
+        id: uniqid(),
+        method: "COD",
+        amount: finalAmount,
+        status: "Cash on Delivery",
+        created: Date.now(),
+        currency: "usd",
+      },
+      orderby: user._id,
+      orderStatus: "Cash on Delivery",
+    }).save();
+    let update = userCart.products.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count } },
+        },
+      };
+    });
+    const updated = await Product.bulkWrite(update, {});
+    res.json({ message: "success" });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginCheck,
@@ -482,5 +530,6 @@ module.exports = {
   userCart,
   getUserCart,
   emptyCart,
-  applyCoupon
+  applyCoupon,
+  createOrder
 };
