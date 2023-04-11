@@ -510,6 +510,21 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 });
 
+// 주문한거 조회
+const getOrders = asyncHandler(async(req, res)=> {
+  const {_id} = req.user;
+  validateMongodbID(_id);
+
+  try {
+    const userorders = await Order.findOne({orderby:_id})
+      .populate("products.product")
+      .exec();
+    res.json(userorders);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginCheck,
@@ -531,5 +546,6 @@ module.exports = {
   getUserCart,
   emptyCart,
   applyCoupon,
-  createOrder
+  createOrder,
+  getOrders
 };
