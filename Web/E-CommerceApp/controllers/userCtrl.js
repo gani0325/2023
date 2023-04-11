@@ -412,7 +412,25 @@ const getUserCart = asyncHandler(async (req, res) => {
   validateMongodbID(_id);
 
   try {
-    const cart = await Cart.findOne({ orderby: _id });
+    const cart = await Cart.findOne({ orderby: _id }).populate(
+      "products.product"
+    );
+    res.json(cart);
+  } catch (error) {
+    throw new Error(error)
+  }
+});
+
+// 장바구니 삭제하기
+const emptyCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  
+  validateMongodbID(_id);
+
+  try {
+    const user = await User.findOne({ _id });
+    console.log(user);
+    const cart = await Cart.findOneAndRemove({ orderby: user._id });
     res.json(cart);
   } catch (error) {
     throw new Error(error)
@@ -437,5 +455,6 @@ module.exports = {
   getWishlist,
   saveAddress,
   userCart,
-  getUserCart
+  getUserCart,
+  emptyCart
 };
