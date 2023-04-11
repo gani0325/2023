@@ -2,6 +2,8 @@ const Blog = require("../models/Blog");
 const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const { validateMongodbID } = require("../utils/validateMongodbID");
+const cloudinaryUploadImg = require("../utils/cloudinary");
+const fs = require("fs");
 
 // 블로그 생성하기
 const createBlog = asyncHandler(async (req, res) => {
@@ -163,6 +165,38 @@ const dislikeBlog = asyncHandler(async (req, res) => {
   }
 });
 
+// 블로그 이미지 업로드하기
+const uploadImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongodbID(id);
+  try {
+    const uploader = (path) => cloudinaryUploadImg(path, "images");
+    const urls = [];
+    const files = req.files;
+    for (const file of files) {
+      const { path } = file;
+      const newpath = await uploader(path);
+      urls.push(newpath);
+      // unlinkSync 파일 삭제
+      fs.unlinkSync(path);
+    }
+    const findBlog = await Blog.findByIdAndUpdate(
+      id,
+      {
+        images: urls.map((file) => {
+          return file;
+        }),
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(findBlog);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createBlog,
   updateBlog,
@@ -171,5 +205,6 @@ module.exports = {
   deleteBlog,
   likeBlog,
   dislikeBlog,
+  uploadImages
 
 }
