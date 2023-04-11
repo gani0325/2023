@@ -205,6 +205,7 @@ const rating = asyncHandler(async (req, res) => {
   }
 });
 
+// 상품 이미지 업로드하기
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbID(id);
@@ -216,6 +217,8 @@ const uploadImages = asyncHandler(async (req, res) => {
       const { path } = file;
       const newpath = await uploader(path);
       urls.push(newpath);
+      // unlinkSync 파일 삭제
+      fs.unlinkSync(path);
     }
     const findProduct = await Product.findByIdAndUpdate(
       id,
@@ -232,7 +235,6 @@ const uploadImages = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new Error(error);
   }
-
 });
 
 module.exports = {

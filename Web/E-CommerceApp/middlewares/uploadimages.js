@@ -4,6 +4,7 @@ const multer = require("multer");
 const sharp = require("sharp");
 // 파일/폴더/디렉터리 등의 경로를 편리하게 설정할 수 있는 기능
 const path = require("path");
+const fs = require("fs");
 
 // 이미지 저장소
 const multerStorage = multer.diskStorage({
@@ -48,6 +49,8 @@ const productImgResize = async (req, res, next) => {
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`public/images/products/${file.filename}`);
+      // unlinkSync 파일 삭제
+      fs.unlinkSync(`public/images/products/${file.filename}`);
     })
   );
   next();
@@ -62,6 +65,8 @@ const blogImgResize = async (req, res, next) => {
         .toFormat("jpeg")
         .jpeg({ quality: 90 })
         .toFile(`public/images/blogs/${file.filename}`);
+      // unlinkSync 파일 삭제
+      fs.unlinkSync(`public/images/blogs/${file.filename}`);
     })
   );
   next();
