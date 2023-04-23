@@ -9,10 +9,23 @@ require("dotenv").config();
 // app.set("키, 값") : 데이터 저장
 app.set("port", process.env.PORT || 3000);
 
-// app.get("주소, 라우터") : 주소에 대한 GET 요청이 올 때 어떤 동작 할지 적기
-app.get("/", (req, res) => {
-    // html로 응답하기
-    res.sendFile(path.join(__dirname, "/index.html"));
+// 미들웨어 : 요청과 응답을 조정
+// 요청, 응답, 다음 미들에ㅜ어로 넘어가기
+app.use((req, res, next) => {
+  console.log("모든 요청에 다 실행됨");
+  next();
+});
+
+app.get("/", (req, res, next) => {
+  console.log("GET / 요청에서만 실행");
+  next();
+}, (req, res) => {
+  throw new Error("에러는 에러 처리 미들웨어로 간다");
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send(err.message);
 });
 
 // HTTP 웹 서버와 동일
