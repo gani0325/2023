@@ -26,12 +26,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
+  // 요청이 올 때 세션에 수정 사항이 생기지 않더라도 다시 저장할지 설정
   resave: false,
+  // 세션에 저장할 내역이 없더라도 처음부터 세션을 생성할지 설정
   saveUninitialized: false,
+  // 쿠키를 서명하는데 secret 값 필요
   secret: process.env.COOKIE_SECRET,
+  // tptus znzldp eogks tjfwjd
   cookie: {
+    // 클라이언트에서 쿠키 확인 못함
     httpOnly: true,
+    // https 가 아닌 환경에서도 사용 가능
     secure: false,
+    // => 배포시 https 적용 true 설정이 좋음
   },
   name: "session-cookie",
 }));
@@ -45,15 +52,19 @@ try {
 }
 
 const upload = multer({
+  // 어디에(destination) 어떤 이름(filename)으로 저장할지
   storage: multer.diskStorage({
     destination(req, file, done) {
       done(null, "uploads/");
     },
     filename(req, file, done) {
       const ext = path.extname(file.originalname);
+      // 파일명+현재시간.확장자 파일명으로 업로드
       done(null, path.basename(file.originalname, ext) + Date.now() + ext);
     },
   }),
+  // 업로드에 대한 제한 사항
+  // 파일 사이즈(fileSize, 바이트 단위)
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
