@@ -13,6 +13,9 @@ const fs = require("fs");
 const path = require("path");
 const { fstat } = require("fs");
 require("dotenv").config();
+// Router
+const indexRouter = require("./routes/index");
+const userRouter = require("./routes/user");
 
 dotenv.config();
 // 서버가 실행될 포트
@@ -42,6 +45,13 @@ app.use(session({
   },
   name: "session-cookie",
 }));
+
+app.use("/", indexRouter);
+app.use("/user", userRouter);
+
+app.use((req, res, next) => {
+  res.status(404).send("Not found");
+});
 
 // multer
 try {
