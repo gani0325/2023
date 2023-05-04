@@ -18,18 +18,23 @@ const Header = () => {
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-            <Link to="/" class="navbar-brand">
+            <Link to="/" class="navbar-brand" href="#">
               <GiShoppingBag />
               E-commerce App
             </Link>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav md-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <NavLink to="/" class="nav-link ">
+                <NavLink
+                  to="/"
+                  class="nav-link activate"
+                  aria-current="page"
+                  href="#"
+                >
                   Home
                 </NavLink>
               </li>
               <li class="nav-item">
-                <NavLink to="/category" class="nav-link ">
+                <NavLink to="/category" class="nav-link" href="#">
                   Category
                 </NavLink>
               </li>
