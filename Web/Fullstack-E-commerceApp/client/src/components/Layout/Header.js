@@ -23,13 +23,13 @@ const Header = () => {
             </NavLink>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <NavLink
-                  to="/"
-                  class="nav-link active"
-                  aria-current="page"
-                  href="#"
-                >
+                <NavLink to="/" class="nav-link ">
                   Home
+                </NavLink>
+              </li>
+              <li class="nav-item">
+                <NavLink to="/category" class="nav-link ">
+                  Category
                 </NavLink>
               </li>
               <li class="nav-item">
