@@ -11,6 +11,7 @@
 #   clothes의 모든 원소는 문자열
 #   모든 문자열의 길이는 1 이상 20 이하인 자연수, 알파벳 소문자 또는 '_'
 
+
 def solution(clothes):
     closet = {}
     answer = 1
@@ -23,8 +24,7 @@ def solution(clothes):
         else:
             closet[key] = [value]
 
-    for i in closet.keys():
+    for key in closet.keys():
         # 모든 경우의 수 - 아예 안입은 거
         answer = answer * (len(closet[key]) + 1)
-        answer -= 1
-    return answer
+    return answer - 1
