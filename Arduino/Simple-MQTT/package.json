@@ -6,7 +6,7 @@
   "main": "publish.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"nodemon publish.js"
+    "start": "nodemon publish.js"
   },
   "author": "",
   "license": "ISC",
