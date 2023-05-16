@@ -32,11 +32,11 @@ router.put(
 router.get("/get-categories", categoryController);
 
 // single category
-router.get("/single-categories/:slug", singleCategoryController);
+router.get("/single-category/:slug", singleCategoryController);
 
 // delete category
 router.delete(
-  "/delete-categories/:id",
+  "/delete-category/:id",
   requireSignIn,
   isAdmin,
   deleteCategoryController
