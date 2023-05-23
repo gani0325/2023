@@ -1,9 +1,9 @@
-package com.todoapp.board.controller;
+package com.example.todoapp.board.controller;
 
-import org.springframework.stereotype.Controler;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controler
+@Controller
 public class HomeController {
     // 기본 주소 요청 "/"
     @GetMapping("/")
