@@ -1,16 +1,30 @@
-// buffer 알아보기
-import {Buffer} from "node:buffer";
-const arr = [];
+import fs from "node:fs";
 
-arr.push(1);
-arr.push(3);
-arr.push(5);
-arr.push(7);
-console.log(arr);       // [ 1, 3, 5, 7 ]
-
-const a = Buffer.from([2, 3, 4, 5]);
-console.log(a, a.length);       // <Buffer 02 03 04 05> 4
-const b = Buffer.alloc(10);
-console.log(b, b.length);       // <Buffer 00 00 00 00 00 00 00 00 00 00> 10
-const c = Buffer.allocUnsafe(10)
-console.log(c, c.length)        // <Buffer f0 0f f6 05 00 00 00 00 08 59> 10
+class Parent {
+    constructor (
+        public pName : string,
+        private pAge : number
+    ) {}
+};
+class Studnet extends Parent{
+    name:string
+    age:number
+    constructor (name:string, age:number) {
+        super("father", 100);
+        this.name = name; this.age = age
+    };
+    get nameAge() {
+        return this.name + "-" + this.age
+    }
+    set nameAge (text:String) {
+        const ts = text.split("-");
+        if (ts.length < 2) return
+        this.name = ts[0];
+        this.age = Number(ts[1]);
+    }
+};
+const t = new Studnet("gani", 24);
+console.log(t);              // Studnet { name: 'gani', age: 24 }
+console.log(t.nameAge);      // gani-24
+t.nameAge = "changeGANI-25";
+console.log(t)               // Studnet { name: 'changeGANI', age: 25 }
