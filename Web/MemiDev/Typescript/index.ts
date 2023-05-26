@@ -1,18 +1,23 @@
-import fs from "node:fs";
+import {EventEmitter} from "node:events";
 
-class Parent {
-    constructor (
-        public pName : string,
-        private pAge : number
-    ) {}
-};
-class Studnet extends Parent{
+class Studnet extends EventEmitter{
     name:string
     age:number
+    private timer: NodeJS.Timer
     constructor (name:string, age:number) {
-        super("father", 100);
-        this.name = name; this.age = age
+        super();
+        this.name = name;
+        this.age = age;
+        this.timer = this.timerOn();
     };
+    timerOn () {
+        return setInterval(() => {
+            this.emit("changed", this.nameAge);
+        }, 2000);
+    }
+    timerOff () {
+        clearInterval(this.timer);
+    }
     get nameAge() {
         return this.name + "-" + this.age
     }
@@ -24,7 +29,11 @@ class Studnet extends Parent{
     }
 };
 const t = new Studnet("gani", 24);
-console.log(t);              // Studnet { name: 'gani', age: 24 }
-console.log(t.nameAge);      // gani-24
-t.nameAge = "changeGANI-25";
-console.log(t)               // Studnet { name: 'changeGANI', age: 25 }
+t.on("changed", (a) => {
+    console.log(new Date(), a);
+});
+
+let count = 0;
+setInterval(() => {
+    t.nameAge = "aa-" + count++
+}, 100);
