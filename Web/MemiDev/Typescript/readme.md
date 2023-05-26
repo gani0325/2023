@@ -5,3 +5,4 @@
   npx tsc --init <br>
   npm add -dev ts-node <br>
   npx ts-node index.js <br>
+  npm add -dev @types/node <br>
