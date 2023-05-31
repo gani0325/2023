@@ -1,12 +1,9 @@
 import express from "express"
+import birds from "./routes/birds"
+import dogs from "./routes/dogs"
 const app = express()
 
-app.get("/", (req, res) => {
-  res.send("hello")
-})
-
-app.get("/about", (req, res) => {
-  res.send("about")
-})
+app.use("/birds", birds)
+app.use("/dogs", dogs)
 
 app.listen(4000)
