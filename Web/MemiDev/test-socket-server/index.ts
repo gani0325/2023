@@ -1,8 +1,12 @@
-import http from "node:http"
+import express from "express"
+const app = express()
 
-const server = http.createServer((req, res) => {
-  if (req.url === "/about") res.end("good!!")
-  else res.end("hello")
+app.get("/", (req, res) => {
+  res.send("hello")
 })
 
-server.listen(3000)
+app.get("/about", (req, res) => {
+  res.send("about")
+})
+
+app.listen(4000)
