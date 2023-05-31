@@ -1,19 +1,8 @@
-import net from "node:net"
+import http from "node:http"
 
-const server = net.createServer(socket => {
-    console.log("greeting")
-    socket
-      .on("ready", () => console.log("ready"))
-      .on("close", () => console.log("close"))
-      .on("error", (e) => console.log("err", e))
-      .on("data", (d) => {
-        console.log(d)
-        console.log(d.toString())
-        // const req = d.toString()
-        // const ps = req.split(" ")
-        // console.log(ps)
-        socket.write("ok good")
-      })
+const server = http.createServer((req, res) => {
+  if (req.url === "/about") res.end("good!!")
+  else res.end("hello")
 })
 
 server.listen(3000)
