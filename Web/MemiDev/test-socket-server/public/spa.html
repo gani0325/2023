@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA</title>
+</head>
+<body>
+    <div>
+        <a onclick = "change('home')">home</a>
+        <a onclick = "change('dog')">dog</a>
+        <a onclick = "change('bird')">bird</a>
+    </div>
+        
+    <div>
+        <img id = "img" src="https://loremflickr.com/320/240/home" />
+    </div>
+    <p id = "content">home</p>
+
+    <script>
+        function change (name) {
+            console.log(name)
+            document.getElementById("content").innerHTML = name
+            document.getElementById("img").src = "https://loremflickr.com/320/240/" + name
+        }
+    </script>
+</body>
+</html>
