@@ -1,7 +1,7 @@
 // 다른 컴포넌트에서 이 서비스를 사용할 수 있게 만들어줌
 // @Injectable 데코레이터로 감싸져서 모듈에 제공
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Board, BoardStatus } from './board.model';
 import { CreateBoardDto } from "./dto/create-board.dto";
 import { v1 as uuid } from "uuid";
@@ -34,7 +34,15 @@ export class BoardsService {
 
     // ID로 특정 게시물 가져오기
     getBoardById(id: string): Board {
-        return this.boards.find((board) => board.id === id);
+        const found = this.boards.find((board) => board.id === id);
+        
+        // 특정 게시물을 찾을 때 없는 경우 결과값 처리하기 
+        // 예외 인스턴스 생성하여 에러 표출
+        if (!found) {
+            throw new NotFoundException(`Can't find Board with id ${id}`);;
+        }
+
+        return found;
     }
 
     // ID로 특정 게시물 삭제하기
