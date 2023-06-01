@@ -3,13 +3,14 @@
 // Handler : @Get, @Post, @Delete 등과 같은 데코레이터로 장식 된 컨트롤러 클래스 내의 단순한 메서드
 import { Controller, Get } from '@nestjs/common';
 import { BoardsService } from './boards.service';
+import { Board } from './board.model';
 
 @Controller('boards')
 export class BoardsController {
     constructor(private boardsService : BoardsService) {}
         
     @Get("/")
-    getAllBoard() {
+    getAllBoard(): Board[] {
         return this.boardsService.getAllBoards();
     }
 }

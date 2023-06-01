@@ -2,13 +2,15 @@
 // @Injectable 데코레이터로 감싸져서 모듈에 제공
 
 import { Injectable } from '@nestjs/common';
+import { Board } from './board.model';
 
 @Injectable()
 export class BoardsService {
-    private boards = [];
+    // [] 로 타입 지정함 
+    private boards: Board[] = [];
 
     // 모든 게시물 조회하기
-    getAllBoards() {
+    getAllBoards(): Board[] {
         return this.boards;
     }
 }
