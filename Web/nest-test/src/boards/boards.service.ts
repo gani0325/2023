@@ -3,7 +3,9 @@
 
 import { Injectable } from '@nestjs/common';
 import { Board, BoardStatus } from './board.model';
+import { CreateBoardDto } from "./dto/create-board.dto";
 import { v1 as uuid } from "uuid";
+
 @Injectable()
 export class BoardsService {
     // [] 로 타입 지정함 
@@ -15,7 +17,9 @@ export class BoardsService {
     }
 
     // 게시물 생성하기
-    createBoard(title: string, description: string) {
+    createBoard(createBoardDto: CreateBoardDto) {
+        const {title, description} = createBoardDto;
+    
         const board: Board = {
             id: uuid(),    // 데이터베이스에서 알아서 해주지만, 여기서는 uuid 모듈로 임의로 넣어줌
             title,
