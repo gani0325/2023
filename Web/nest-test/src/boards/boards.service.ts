@@ -2,8 +2,8 @@
 // @Injectable 데코레이터로 감싸져서 모듈에 제공
 
 import { Injectable } from '@nestjs/common';
-import { Board } from './board.model';
-
+import { Board, BoardStatus } from './board.model';
+import { v1 as uuid } from "uuid";
 @Injectable()
 export class BoardsService {
     // [] 로 타입 지정함 
@@ -12,5 +12,17 @@ export class BoardsService {
     // 모든 게시물 조회하기
     getAllBoards(): Board[] {
         return this.boards;
+    }
+
+    // 게시물 생성하기
+    createBoard(title: string, description: string) {
+        const board: Board = {
+            id: uuid(),    // 데이터베이스에서 알아서 해주지만, 여기서는 uuid 모듈로 임의로 넣어줌
+            title,
+            description,
+            status: BoardStatus.PUBLIC
+        }
+        this.boards.push(board);
+        return board;
     }
 }
