@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { Board, BoardStatus } from './board.model';
 import { CreateBoardDto } from "./dto/create-board.dto";
 import { v1 as uuid } from "uuid";
+import { create } from 'domain';
 
 @Injectable()
 export class BoardsService {
@@ -28,5 +29,10 @@ export class BoardsService {
         }
         this.boards.push(board);
         return board;
+    }
+
+    // ID로 특정 게시물 가져오기
+    getBoardById(id: string): Board {
+        return this.boards.find((board) => board.id === id);
     }
 }
