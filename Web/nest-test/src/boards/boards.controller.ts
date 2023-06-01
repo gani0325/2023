@@ -29,4 +29,10 @@ export class BoardsController {
     getBoardByID(@Param("id") id: string): Board {
         return this.boardsService.getBoardById(id)
     }
+
+    // ID 로 특정 게시물 삭제하기
+    @Delete("/:id")
+    deleteBoard(@Param("id") id: string): void {
+        this.boardsService.deleteBoard(id);
+    }
 }
