@@ -6,6 +6,7 @@ import { Board, BoardStatus } from './board.model';
 import { CreateBoardDto } from "./dto/create-board.dto";
 import { v1 as uuid } from "uuid";
 import { create } from 'domain';
+import { statSync } from 'fs';
 
 @Injectable()
 export class BoardsService {
@@ -39,5 +40,13 @@ export class BoardsService {
     // ID로 특정 게시물 삭제하기
     deleteBoard(id: string): void {
         this.boards = this.boards.filter((board) => board.id !== id);
+    }
+
+    // 특정 게시물의 상태 업데이트 
+    updateBoardUpdate(id: string, status: BoardStatus): Board {
+        // 특정 게시물 찾기
+        const board = this.getBoardById(id);
+        board.status = status;
+        return board;
     }
 }
