@@ -6,6 +6,7 @@ import { BoardsService } from './boards.service';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
+import { Board } from './board.entity';
 
 @Controller('boards')
 export class BoardsController {
@@ -26,7 +27,11 @@ export class BoardsController {
     //     return this.boardsService.createBoard(createBoardDto)
     // }
     
-    // // ID로 특정 게시물 가져오기
+    // ID로 특정 게시물 가져오기
+    @Get("/:id")
+    getBoardByID(@Param("id") id:number) : Promise<Board> {
+        return this.boardsService.getBoardById(id);
+    }
     // @Get("/:id")
     // getBoardByID(@Param("id") id: string): Board {
     //     return this.boardsService.getBoardById(id)
