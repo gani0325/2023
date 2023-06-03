@@ -7,9 +7,17 @@ import { CreateBoardDto } from "./dto/create-board.dto";
 import { v1 as uuid } from "uuid";
 import { create } from 'domain';
 import { statSync } from 'fs';
+import { BoardRepository } from './board.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Board } from './board.entity';
 
 @Injectable()
 export class BoardsService {
+    constructor(
+        @InjectRepository(BoardRepository)
+        private boardRepository: BoardRepository,
+    ){}
+
     // // [] 로 타입 지정함 
     // private boards: Board[] = [];
 
@@ -32,7 +40,17 @@ export class BoardsService {
     //     return board;
     // }
 
-    // // ID로 특정 게시물 가져오기
+    // ID로 특정 게시물 가져오기
+    async getBoardById(id: number): Promise <Board> {
+        const found = await this.boardRepository.findOne(id);
+
+        // 특정 게시물을 찾을 때 없는 경우 결과값 처리하기 
+        // 예외 인스턴스 생성하여 에러 표출
+        if (!found) {
+            throw new NotFoundException(`Can't find Board with id ${id}`);
+        }
+        return found;
+    }
     // getBoardById(id: string): Board {
     //     const found = this.boards.find((board) => board.id === id);
         
