@@ -26,7 +26,20 @@ export class BoardsService {
     //     return this.boards;
     // }
 
-    // // 게시물 생성하기
+    // 게시물 생성하기
+    async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+        const {title, description} = createBoardDto;
+
+        const board = this.boardRepository.create({
+            title,
+            description,
+            status: BoardStatus.PUBLIC
+        })
+
+        await this.boardRepository.save(board);
+        return board;
+        
+    }
     // createBoard(createBoardDto: CreateBoardDto) {
     //     const {title, description} = createBoardDto;
     

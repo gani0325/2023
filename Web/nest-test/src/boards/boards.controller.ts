@@ -18,7 +18,12 @@ export class BoardsController {
     //     return this.boardsService.getAllBoards();
     // }
 
-    // // 게시물 생성하기 + 유효성 체크하기 
+    // 게시물 생성하기 + 유효성 체크하기 
+    @Post()
+    @UsePipes(ValidationPipe)
+    createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
+        return this.boardsService.createBoard(createBoardDto)
+    }
     // @Post()
     // @UsePipes(ValidationPipe)
     // createBoard(
