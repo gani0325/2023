@@ -12,11 +12,11 @@ import { Board } from './board.entity';
 export class BoardsController {
     constructor(private boardsService : BoardsService) {}
     
-    // // 모든 게시물 조회하기
-    // @Get("/")
-    // getAllBoard(): Board[] {
-    //     return this.boardsService.getAllBoards();
-    // }
+    // 모든 게시물 조회하기
+    @Get("/")
+    getAllBoard(): Promise<Board[]> {
+        return this.boardsService.getAllBoards();
+    }
 
     // 게시물 생성하기 + 유효성 체크하기 
     @Post()

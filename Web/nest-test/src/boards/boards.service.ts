@@ -18,13 +18,10 @@ export class BoardsService {
         private boardRepository: BoardRepository,
     ){}
 
-    // // [] 로 타입 지정함 
-    // private boards: Board[] = [];
-
-    // // 모든 게시물 조회하기
-    // getAllBoards(): Board[] {
-    //     return this.boards;
-    // }
+    // 모든 게시물 조회하기
+    async getAllBoards(): Promise <Board[]> {
+        return this.boardRepository.find();
+    }
 
     // 게시물 생성하기
     async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
