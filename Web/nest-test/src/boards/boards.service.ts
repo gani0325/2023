@@ -54,7 +54,16 @@ export class BoardsService {
     //     return found;
     // }
 
-    // // ID로 특정 게시물 삭제하기
+    // ID로 특정 게시물 삭제하기
+    async deleteBoard(id: number): Promise<void> {
+        const result = await this.boardRepository.delete(id);
+
+        // ID가 존재하는 게시물이니?
+        if (result.affected === 0) {
+            throw new NotFoundException(`Can't find Board with id ${id}`);
+        }
+    }
+
     // deleteBoard(id: string): void {
     //     // 있는 ID 의 게시물인지 확인하기
     //     const found = this.getBoardById(id);

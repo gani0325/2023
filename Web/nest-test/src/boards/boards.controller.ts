@@ -1,7 +1,7 @@
 // 들어오는 요청을 처리하고 클라이언트에 응답을 반환함
 // @Controller 데코레이터로 클래스를 데코레이션하여 정의함
 // Handler : @Get, @Post, @Delete 등과 같은 데코레이터로 장식 된 컨트롤러 클래스 내의 단순한 메서드
-import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -42,7 +42,11 @@ export class BoardsController {
     //     return this.boardsService.getBoardById(id)
     // }
 
-    // // ID 로 특정 게시물 삭제하기
+    // ID 로 특정 게시물 삭제하기
+    @Delete("/:id")
+    deleteBoard(@Param("id",ParseIntPipe) id): Promise<void> {
+        return this.boardsService.deleteBoard(id);
+    }
     // @Delete("/:id")
     // deleteBoard(@Param("id") id: string): void {
     //     this.boardsService.deleteBoard(id);
