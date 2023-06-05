@@ -28,30 +28,8 @@ export class BoardsService {
 
     // 게시물 생성하기
     async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
-        const {title, description} = createBoardDto;
-
-        const board = this.boardRepository.create({
-            title,
-            description,
-            status: BoardStatus.PUBLIC
-        })
-
-        await this.boardRepository.save(board);
-        return board;
-        
+        return this.boardRepository.createBoard(createBoardDto);       
     }
-    // createBoard(createBoardDto: CreateBoardDto) {
-    //     const {title, description} = createBoardDto;
-    
-    //     const board: Board = {
-    //         id: uuid(),    // 데이터베이스에서 알아서 해주지만, 여기서는 uuid 모듈로 임의로 넣어줌
-    //         title,
-    //         description,
-    //         status: BoardStatus.PUBLIC
-    //     }
-    //     this.boards.push(board);
-    //     return board;
-    // }
 
     // ID로 특정 게시물 가져오기
     async getBoardById(id: number): Promise <Board> {
