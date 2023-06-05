@@ -52,12 +52,12 @@ export class BoardsController {
     //     this.boardsService.deleteBoard(id);
     // }
 
-    // // 특정 게시물의 상태 업데이트 
-    // @Patch("/:id/status")
-    // updateBoardSatus(
-    //     @Param("id") id: string,
-    //     @Body('status', BoardStatusValidationPipe) status: BoardStatus
-    // ) {
-    //     return this.boardsService.updateBoardUpdate(id, status);
-    // }
+    // 특정 게시물의 상태 업데이트 
+    @Patch("/:id/status")
+    updateBoardStatus(
+        @Param("id", ParseIntPipe) id: number,
+        @Body('status', BoardStatusValidationPipe) status: BoardStatus
+    ) {
+        return this.boardsService.updateBoardStatus(id, status);
+    }
 }

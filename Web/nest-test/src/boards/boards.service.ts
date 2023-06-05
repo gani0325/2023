@@ -70,7 +70,14 @@ export class BoardsService {
     //     this.boards = this.boards.filter((board) => board.id !== found.id);
     // }
 
-    // // 특정 게시물의 상태 업데이트 
+    // 특정 게시물의 상태 업데이트 
+    async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+        const board = await this.getBoardById(id);
+        board.status = status;
+        await this.boardRepository.save(board);
+        
+        return board;
+    }
     // updateBoardUpdate(id: string, status: BoardStatus): Board {
     //     // 특정 게시물 찾기
     //     const board = this.getBoardById(id);
