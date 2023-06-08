@@ -12,4 +12,10 @@ export class AuthController {
     signUp(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<void> {
         return this.authService.signUp(authCredentialsDto);
     }
+    
+    // 로그인 기능 구현하기
+    @Post("/signin")
+    signIn(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto) {
+        return this.authService.signIn(authCredentialsDto);
+    }
 }
