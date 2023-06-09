@@ -2,6 +2,8 @@ import { Body, Controller, Post, Req, UseGuards, ValidationPipe } from '@nestjs/
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './get-decorator';
+import { User } from './user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -25,8 +27,8 @@ export class AuthController {
     // 인증 미들웨어
     // 지정된 경로로 통과할 수 있는 사람과 허용하지 않는 사람을 서버에 알려줌
     @UseGuards(AuthGuard())
-    test(@Req() req) {
-        console.log("req ", req);
+    test(@GetUser() user: User) {
+        console.log("user", user);
     }
 
 }
