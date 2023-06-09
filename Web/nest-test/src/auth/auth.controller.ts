@@ -1,6 +1,7 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credential.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -18,4 +19,14 @@ export class AuthController {
     signIn(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<{accessToken: string}> {
         return this.authService.signIn(authCredentialsDto);
     }
+
+    // TEST
+    @Post("/authTest")
+    // 인증 미들웨어
+    // 지정된 경로로 통과할 수 있는 사람과 허용하지 않는 사람을 서버에 알려줌
+    @UseGuards(AuthGuard())
+    test(@Req() req) {
+        console.log("req ", req);
+    }
+
 }
