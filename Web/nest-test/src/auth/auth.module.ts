@@ -5,9 +5,12 @@ import { UserRepository } from './user.repository';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
+import { Passport } from 'passport';
 
 @Module({
   imports: [
+    // 유저를 인증하기위해 사용할 기본 stragety 명시
     PassportModule.register({ defaultStrategy: "jwt"}),
     JwtModule.register({
       // 토큰을 만들 때 이용하는 Secret 텍스트
@@ -20,6 +23,9 @@ import { JwtModule } from '@nestjs/jwt';
     TypeOrmModule.forFeature([UserRepository])
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  // JwtStrategy를 이 Auth 모듈에서 사용할 수 있도록 등록
+  providers: [AuthService, JwtStrategy],
+  // 다른 곳에서도 사용해야 하므로 exports..
+  exports: [JwtStrategy, PassportModule]
 })
 export class AuthModule {}
