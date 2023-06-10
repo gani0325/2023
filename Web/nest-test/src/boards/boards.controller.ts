@@ -53,8 +53,11 @@ export class BoardsController {
 
     // ID 로 특정 게시물 삭제하기
     @Delete("/:id")
-    deleteBoard(@Param("id",ParseIntPipe) id): Promise<void> {
-        return this.boardsService.deleteBoard(id);
+    deleteBoard(@Param("id",ParseIntPipe) id,
+    // 자신이 생성한 게시물을 삭제하기 
+    @GetUser() user:User
+        ): Promise<void> {
+        return this.boardsService.deleteBoard(id, user);
     }
     // @Delete("/:id")
     // deleteBoard(@Param("id") id: string): void {

@@ -59,9 +59,9 @@ export class BoardsService {
     //     return found;
     // }
 
-    // ID로 특정 게시물 삭제하기
-    async deleteBoard(id: number): Promise<void> {
-        const result = await this.boardRepository.delete(id);
+    // ID로 특정 게시물 삭제하기 (자신이 생성한 게시물을 삭제하기)
+    async deleteBoard(id: number, user: User): Promise<void> {
+        const result = await this.boardRepository.delete({id, user});
 
         // ID가 존재하는 게시물이니?
         if (result.affected === 0) {
