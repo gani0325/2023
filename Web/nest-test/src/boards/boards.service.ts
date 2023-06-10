@@ -20,8 +20,15 @@ export class BoardsService {
     ){}
 
     // 모든 게시물 조회하기
-    async getAllBoards(): Promise <Board[]> {
-        return this.boardRepository.find();
+    async getAllBoards(
+        user: User
+    ): Promise <Board[]> {
+        // 해당 유저의 게시물만 가져오기 (getAllBoards)
+        const query = this.boardRepository.createQueryBuilder("board");
+        query.where("board.userId = :userId", { userId: user.id});
+        const boards = await query.getMany();
+        
+        return boards;
     }
 
     // 게시물 생성하기

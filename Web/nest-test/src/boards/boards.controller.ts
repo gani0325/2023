@@ -19,8 +19,11 @@ export class BoardsController {
     
     // 모든 게시물 조회하기
     @Get("/")
-    getAllBoard(): Promise<Board[]> {
-        return this.boardsService.getAllBoards();
+    getAllBoard(
+        // 해당 유저의 게시물만 가져오기 (getAllBoards)
+        @GetUser() user: User
+    ): Promise<Board[]> {
+        return this.boardsService.getAllBoards(user);
     }
 
     // 게시물 생성하기 + 유효성 체크하기 
