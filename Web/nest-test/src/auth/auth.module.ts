@@ -6,7 +6,9 @@ import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-import { Passport } from 'passport';
+import * as config from "config";
+
+const jwtConfig = config.get("jwt");
 
 @Module({
   imports: [
@@ -14,10 +16,10 @@ import { Passport } from 'passport';
     PassportModule.register({ defaultStrategy: "jwt"}),
     JwtModule.register({
       // 토큰을 만들 때 이용하는 Secret 텍스트
-      secret: "Secret1234", // 아무거나 해도 됨
+      secret: process.env.JWT_SECRET || jwtConfig.secret, // 아무거나 해도 됨
       signOptions: {
         // 정해진 시간 이후에는 토큰이 유효하지 않게 됨 (60 * 60 은 한시간)
-        expiresIn: 60 * 60,
+        expiresIn: jwtConfig.expiresIn,
       }
     }),
     TypeOrmModule.forFeature([UserRepository])
