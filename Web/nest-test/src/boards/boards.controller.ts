@@ -1,7 +1,7 @@
 // 들어오는 요청을 처리하고 클라이언트에 응답을 반환함
 // @Controller 데코레이터로 클래스를 데코레이션하여 정의함
 // Handler : @Get, @Post, @Delete 등과 같은 데코레이터로 장식 된 컨트롤러 클래스 내의 단순한 메서드
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -15,6 +15,8 @@ import { User } from 'src/auth/user.entity';
 // 인증된 유저만 게시물 보고 쓸 수 있게 하기 
 @UseGuards(AuthGuard())
 export class BoardsController {
+    // 로그 적용하기
+    private logger = new Logger("BoardsController");
     constructor(private boardsService : BoardsService) {}
     
     // 모든 게시물 조회하기
@@ -23,6 +25,8 @@ export class BoardsController {
         // 해당 유저의 게시물만 가져오기 (getAllBoards)
         @GetUser() user: User
     ): Promise<Board[]> {
+        // 로그 적용하기
+        this.logger.verbose(`User ${user.username} trying to get all boards`);
         return this.boardsService.getAllBoards(user);
     }
 
@@ -31,6 +35,7 @@ export class BoardsController {
     @UsePipes(ValidationPipe)
     createBoard(@Body() createBoardDto: CreateBoardDto,
     @GetUser() user:User): Promise<Board> {
+        this.logger.verbose(`User ${user.username} creating a new board. Payload: ${JSON.stringify(createBoardDto)}`);
         return this.boardsService.createBoard(createBoardDto, user)
     }
     // @Post()
