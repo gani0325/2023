@@ -1,9 +1,10 @@
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BoardsModule } from './boards/boards.module';
 import { typeORMConfig } from './configs/typeorm.config';
 import { AuthModule } from './auth/auth.module';
-import { AutController } from './aut/aut.controller';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -11,7 +12,6 @@ import { AutController } from './aut/aut.controller';
     BoardsModule,
     AuthModule
   ],
-  controllers: [AutController],
+  controllers: [AuthController],
 })
-
 export class AppModule {}

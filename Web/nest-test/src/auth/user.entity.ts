@@ -16,5 +16,5 @@ export class User extends BaseEntity {
     
     // 유저와 게시물 데이터의 관계 형성
     @OneToMany(type => Board, board => board.user, {eager : true})
-    boards: Board()
+    boards: Board[]
 }
