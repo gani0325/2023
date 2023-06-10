@@ -18,6 +18,6 @@ export class Board extends BaseEntity {
     status: BoardStatus;
     
     // 유저와 게시물 데이터의 관계 형성
-    @ManyToMany(type => User, user => user.boards. { eager: false })
+    @ManyToMany(type => User, user => user.boards, { eager: false })
     user: User;
 }
