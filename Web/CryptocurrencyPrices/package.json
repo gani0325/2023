@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "axios": "^1.4.0",
+    "coindex": "^1.0.2",
+    "colors": "^1.4.0",
+    "commander": "^10.0.1",
+    "configstore": "^6.0.0",
+    "inquirer": "^9.2.7"
+  },
+  "name": "coindex",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": "./bin/coindex.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gani",
+  "license": "MIT",
+  "description": ""
+}
