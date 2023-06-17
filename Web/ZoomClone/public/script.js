@@ -18,6 +18,18 @@ navigator.mediaDevices
   .then((stream) => {
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
+
+    peer.on("call", (call) => {
+      call.answer(stream);
+      const video = document.createElement("video");
+      call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
+      });
+    });
+
+    socket.on("user-connected", (userId) => {
+      connectToNewUser(userId, stream);
+    });
   });
 
 // ID만 지정해주면 손쉽게 P2P 연결을 처리
@@ -26,13 +38,9 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id);
 });
 
-socket.on("user-connected", (userId) => {
-  connectToNewUser(userId);
-});
-
 // 새로운 User
-const connectToNewUser = (userId) => {
-  const call = myPeer.call(userId, stream);
+const connectToNewUser = (userId, stream) => {
+  const call = peer.call(userId, stream);
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
