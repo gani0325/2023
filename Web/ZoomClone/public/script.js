@@ -1,3 +1,4 @@
+const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 myVideo.muted = true;
@@ -13,6 +14,9 @@ navigator.mediaDevices
     addVideoStream(myVideo, stream);
   });
 
+socket.emit("join-room");
+
+// 웹캠 넣기
 const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
