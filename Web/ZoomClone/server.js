@@ -27,7 +27,16 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
     socket.broadcast.to(roomId).emit("user-connected", userId);
+    // messages
+    socket.on("message", (message) => {
+      //send message to the same room
+      io.to(roomId).emit("createMessage", message);
+    });
+
+    socket.on("disconnect", () => {
+      socket.broadcast.to(roomId).emit("user-disconnected", userId);
+    });
   });
 });
 
-server.listen(3030);
+server.listen(process.env.PORT || 3030);
