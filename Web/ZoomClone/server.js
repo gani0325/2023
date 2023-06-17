@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
+const io = require("socket.io")(server);
 // UUID : 범용 고유 식별자를 의미하며 중복이 되지 않는 유일한 값을 구성
 const { v4: uuidV4 } = require("uuid");
 
@@ -14,6 +15,13 @@ app.get("/", (req, res) => {
 
 app.get("/:room", (req, res) => {
   res.render("room", { roomId: req.params.room });
+});
+
+// socket
+io.on("connection", (socket) => {
+  socket.on("join-room", () => {
+    console.log("joined room");
+  });
 });
 
 server.listen(3030);
