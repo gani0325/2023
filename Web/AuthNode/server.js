@@ -1,6 +1,20 @@
 const express = require("express");
 const session = require("express-session");
+const mongoose = require("mongoose");
 const app = express();
+
+// DB config
+require("dotenv").config();
+const db = process.env.MONGODB_URI;
+// connect to Mongo
+mongoose
+  .connect(db, {
+    useNewUrlParser: true, // useNewUrlParser : 에러 방지
+    useUnifiedTopology: true,
+  })
+  .then((res) => {
+    console.log("💚 MongoDB Connected...");
+  });
 
 // 모든 uri에 접근 했을 때 적용되도록 라우터를 만듦
 app.use(
