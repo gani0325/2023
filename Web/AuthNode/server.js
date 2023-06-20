@@ -51,7 +51,23 @@ app.get("/", (req, res) => {
 app.get("/login", (req, res) => {
   res.render("login");
 });
-app.post("/login", (req, res) => {});
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await UserModel.findOne({ email });
+
+  // 가입되지 않은 사용자라면
+  if (!user) {
+    return res.redirect("/login");
+  }
+
+  // 비밀번호가 틀렸다면
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.redirect("/login");
+  }
+
+  res.redirect("/dashboard");
+});
 
 // // Register Page
 app.get("/register", (req, res) => {
