@@ -7,6 +7,9 @@ const app = express();
 // DB config
 require("dotenv").config();
 const db = process.env.MONGODB_URI;
+
+const UserModel = require("./models/User");
+
 // connect to Mongo
 mongoose
   .connect(db, {
@@ -21,6 +24,9 @@ const store = new MongoDBSession({
   collection: "mySessions",
 });
 
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
+
 // 모든 uri에 접근 했을 때 적용되도록 라우터를 만듦
 app.use(
   session({
@@ -34,10 +40,44 @@ app.use(
   })
 );
 
+//=================== Routes
+// Landing Page
 app.get("/", (req, res) => {
-  req.session.isAuth = true;
-  res.send("Hello sessions");
+  res.render("landing");
 });
+
+// // Login Page
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+app.post("/login", (req, res) => {});
+
+// // Register Page
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+app.post("/register", async (req, res) => {
+  const { username, email, password } = req.body;
+
+  let user = await UserModel.findOne({ email });
+
+  if (user) {
+    return res.redirect("/register");
+  }
+
+  user = new UserModel({
+    username,
+    email,
+    password,
+  });
+});
+
+// // Dashboard Page
+app.get("/dashboard", (req, res) => {
+  res.render("dashboard");
+});
+
+app.post("/logout", (req, res) => {});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
