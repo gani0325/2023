@@ -41,6 +41,14 @@ app.use(
   })
 );
 
+const isAuth = (req, res, next) => {
+  if (req.session.isAuth) {
+    next();
+  } else {
+    res.redirect("/login");
+  }
+};
+
 //=================== Routes
 // Landing Page
 app.get("/", (req, res) => {
@@ -66,6 +74,7 @@ app.post("/login", async (req, res) => {
     return res.redirect("/login");
   }
 
+  req.session.isAuth = true;
   res.redirect("/dashboard");
 });
 
@@ -96,11 +105,17 @@ app.post("/register", async (req, res) => {
 });
 
 // // Dashboard Page
-app.get("/dashboard", (req, res) => {
+app.get("/dashboard", isAuth, (req, res) => {
   res.render("dashboard");
 });
 
-app.post("/logout", (req, res) => {});
+// // Logout Page
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) throw err;
+    res.redirect("/");
+  });
+});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
