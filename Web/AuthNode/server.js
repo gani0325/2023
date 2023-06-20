@@ -1,6 +1,5 @@
 const express = require("express");
 const session = require("express-session");
-const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const MongoDBSession = require("connect-mongodb-session")(session);
 const app = express();
@@ -8,8 +7,16 @@ const app = express();
 // DB config
 require("dotenv").config();
 const db = process.env.MONGODB_URI;
-
-const UserModel = require("./models/User");
+const {
+  landing_page,
+  login_get,
+  login_post,
+  register_get,
+  register_post,
+  dashboard_get,
+  logout_page,
+} = require("./controllers/appController");
+const isAuth = require("./middlewares/isAuth");
 
 // connect to Mongo
 mongoose
@@ -41,81 +48,23 @@ app.use(
   })
 );
 
-const isAuth = (req, res, next) => {
-  if (req.session.isAuth) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-};
-
 //=================== Routes
 // Landing Page
-app.get("/", (req, res) => {
-  res.render("landing");
-});
+app.get("/", landing_page);
 
 // // Login Page
-app.get("/login", (req, res) => {
-  res.render("login");
-});
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await UserModel.findOne({ email });
-
-  // 가입되지 않은 사용자라면
-  if (!user) {
-    return res.redirect("/login");
-  }
-
-  // 비밀번호가 틀렸다면
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.redirect("/login");
-  }
-
-  req.session.isAuth = true;
-  res.redirect("/dashboard");
-});
+app.get("/login", login_get);
+app.post("/login", login_post);
 
 // // Register Page
-app.get("/register", (req, res) => {
-  res.render("register");
-});
-app.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
-
-  let user = await UserModel.findOne({ email });
-
-  if (user) {
-    return res.redirect("/register");
-  }
-
-  const hashedPsw = await bcrypt.hash(password, 12);
-
-  user = new UserModel({
-    username,
-    email,
-    password: hashedPsw,
-  });
-
-  await user.save();
-
-  res.redirect("/login");
-});
+app.get("/register", register_get);
+app.post("/register", register_post);
 
 // // Dashboard Page
-app.get("/dashboard", isAuth, (req, res) => {
-  res.render("dashboard");
-});
+app.get("/dashboard", isAuth, dashboard_get);
 
 // // Logout Page
-app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) throw err;
-    res.redirect("/");
-  });
-});
+app.post("/logout", logout_page);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
