@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const MongoDBSession = require("connect-mongodb-session")(session);
 const app = express();
@@ -65,11 +66,17 @@ app.post("/register", async (req, res) => {
     return res.redirect("/register");
   }
 
+  const hashedPsw = await bcrypt.hash(password, 12);
+
   user = new UserModel({
     username,
     email,
-    password,
+    password: hashedPsw,
   });
+
+  await user.save();
+
+  res.redirect("/login");
 });
 
 // // Dashboard Page
