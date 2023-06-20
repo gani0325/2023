@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const mongoose = require("mongoose");
+const MongoDBSession = require("connect-mongodb-session")(session);
 const app = express();
 
 // DB config
@@ -12,9 +13,13 @@ mongoose
     useNewUrlParser: true, // useNewUrlParser : 에러 방지
     useUnifiedTopology: true,
   })
-  .then((res) => {
-    console.log("💚 MongoDB Connected...");
-  });
+  .then((req) => console.log("💚MongoDB Connected..."))
+  .catch((err) => console.log(err));
+
+const store = new MongoDBSession({
+  url: db,
+  collection: "mySessions",
+});
 
 // 모든 uri에 접근 했을 때 적용되도록 라우터를 만듦
 app.use(
@@ -25,13 +30,12 @@ app.use(
     resave: false,
     // request에서 새로 생성된 session에 아무런 작업이 이루어지지 않은 상황
     saveUninitialized: false,
+    store: store,
   })
 );
 
 app.get("/", (req, res) => {
   req.session.isAuth = true;
-  console.log(req.session);
-  console.log(req.session.id);
   res.send("Hello sessions");
 });
 
