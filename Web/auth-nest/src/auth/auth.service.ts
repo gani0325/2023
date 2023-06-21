@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   // 생성자(Constructor) 를 통해 의존성을 주입
   constructor(private prisma: PrismaService,
-    private jwtServce: JwtService
+    private jwtService: JwtService
     ) {}
   
   hashData(data: string) {
@@ -18,14 +18,14 @@ export class AuthService {
 
   async getTokens(userId: number, email: string): Promise<Tokens> {
     const [at, rt] = await Promise.all([
-      this.jwtServce.signAsync({
+      this.jwtService.signAsync({
         sub: userId,
         email
       }, {
         secret: "at-secret",
         expiresIn: 60*15,
       }),
-      this.jwtServce.signAsync({
+      this.jwtService.signAsync({
         sub: userId,
         email
       }, {
