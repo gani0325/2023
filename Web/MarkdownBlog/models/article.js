@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const marked = require("marked");
+const { marked } = require("marked");
 const slugify = require("slugify");
 const createdDomPurify = require("dompurify");
 const { JSDOM } = require("jsdom");
