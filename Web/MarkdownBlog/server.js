@@ -8,7 +8,19 @@ app.set("view engine", "ejs");
 app.use("/article", articleRouter);
 
 app.get("/", (req, res) => {
-  res.render("index");
+  const articles = [
+    {
+      title: "Test article1",
+      createdAt: new Date(),
+      description: "Test description1",
+    },
+    {
+      title: "Test article2",
+      createdAt: new Date(),
+      description: "Test description2",
+    },
+  ];
+  res.render("index", { articles: articles });
 });
 
 app.listen(3000);
