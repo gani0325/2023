@@ -1,6 +1,21 @@
 const express = require("express");
 const articleRouter = require("./routes/articles");
+const mongoose = require("mongoose");
 const app = express();
+
+require("dotenv").config();
+
+// DB config
+const db = process.env.MONGODB_URI;
+
+// connect to Mongo
+mongoose
+  .connect(db, {
+    useNewUrlParser: true, // useNewUrlParser : 에러 방지
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("💚MongoDB Connected..."))
+  .catch((err) => console.log(err));
 
 app.set("view engine", "ejs");
 
@@ -20,7 +35,7 @@ app.get("/", (req, res) => {
       description: "Test description2",
     },
   ];
-  res.render("index", { articles: articles });
+  res.render("articles/index", { articles: articles });
 });
 
 app.listen(3000);
