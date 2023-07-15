@@ -14,6 +14,8 @@ public class main {
                 return s1.length() - s2.length();
             }
         });
+        // 위 다섯줄과 같음
+        // Arrays.sort(arr, (s1, s2) -> s1.length() - s2.length());
 
         System.out.println("문자열 길이 순서로 정렬 : " + Arrays.toString(arr));
     }
