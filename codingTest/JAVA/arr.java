@@ -7,8 +7,14 @@ public class main {
     public static void main(String[] args) {
         String[] arr = { "Apple", "Kiwi", "Orange", "Banana", "Watermelon", "Cherry" };
 
-        Arrays.sort(arr, Collections.reverseOrder());
+        // 문자열 길이로 비교하는 Comparator를 구현
+        Arrays.sort(arr, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.length() - s2.length();
+            }
+        });
 
-        System.out.println("내림차순 : " + Arrays.toString(arr));
+        System.out.println("문자열 길이 순서로 정렬 : " + Arrays.toString(arr));
     }
 }
