@@ -5,21 +5,28 @@ import java.io.*;
 public class main {
     // tip: arguments are passed via the field below this editor
     public static void main(String[] args) {
-        String str = "My name is gani";
+        String str = "apple";
 
-        // 문자 자르기
-        System.out.println(str.substring(1, 3)); // 인덱스 1 이상 3 미만 위치의 문자열 반환
-        System.out.println(str.substring(3)); // 인덱스 3 미만 위치의 문자열 반환
+        // 문자 동일 여부 판단
+        // 자바 string의 경우, 클래스로써 Call by Reference형태로 생성 시 주소값이 부여
+        // => String타입을 선언했을때는 같은 값을 부여하더라도 서로간의 주소값이 다르다.
+        // => 값 비교로는 equals를 사용
+        System.out.println(str.equals("apple"));
 
-        // 문자 치환(바꾸기)
-        // replace([기존문자], [바꿀문자])
-        System.out.println(str.replace('g', 'n')); // 모든 [기존 문자]를 [바꿀 문자]로 치환
+        // 문자 비교
+        /**
+         * str과 같으면 0
+         * str이 사전순으로 앞이면 -1
+         * str이 사전순으로 뒤면 1
+         * str이 마지막 문자만 다르면, 마지막 문자의 사전순 차이 반환
+         */
+        System.out.println(str.compareTo("applq"));
 
-        // replaceAll([정규식], [바꿀문자])
-        System.out.println(str.replaceAll(".", "/")); // "/////" -> 정규식에 맞춰 문자 치환 (정규식 "." 은 모든 문자를 의미)
+        // 문자 포함 여부 판단
+        System.out.println(str.contains("app"));
 
-        String str2 = "gani";
-        // replaceFirst([기존문자], [바꿀문자])
-        System.out.println(str2.replaceFirst('i', 'p')); // 여러 문자 중 첫번째만 치환
+        // 문자 <-> 숫자 변환
+        System.out.println(Integer.parseInt("100")); // 문자열 "100"을 숫자 100으로 변환
+        System.out.println(Integer.toString(100)); // 숫자 100을 문자열 "100"으로 변환
     }
 }
