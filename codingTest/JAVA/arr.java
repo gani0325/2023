@@ -7,8 +7,8 @@ public class main {
     public static void main(String[] args) {
         String[] arr = { "Apple", "Kiwi", "Orange", "Banana", "Watermelon", "Cherry" };
 
-        Arrays.sort(arr);
+        Arrays.sort(arr, Collections.reverseOrder());
 
-        System.out.println("오름차순 : " + Arrays.toString(arr));
+        System.out.println("내림차순 : " + Arrays.toString(arr));
     }
 }
