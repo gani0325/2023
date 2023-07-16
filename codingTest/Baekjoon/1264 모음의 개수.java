@@ -20,10 +20,10 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Scanner sr = new Scanner(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         while (true) {
-            String str = sr.readLine();
+            String str = br.readLine();
             if (str.equals("#"))
                 break;
 
