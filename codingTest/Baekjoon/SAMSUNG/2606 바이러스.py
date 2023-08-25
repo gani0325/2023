@@ -46,24 +46,22 @@ for _ in range(network) :
     graph[a].append(b)
     graph[b].append(a)
 
-print(graph)
-# bfs queue 사용
-def bfs(x) :
-    queue = deque([x])
-    cnt = 0
-    # 방문함
+# stack 구현
+def dfs(x) :
+    stack = [x]
     visited[x] = True
 
-    while queue :
-        node = queue.popleft()
+    cnt = 0
+
+    while stack :
+        node = stack.pop()
         for i in graph[node] :
             if not visited[i] :
                 visited[i] = True
-                queue.append(i)
+                stack.append(i)
                 cnt += 1
 
     return cnt
 
-# 1번 컴퓨터가 웜 바이러스에 걸렸을 때, 1번 컴퓨터를 통해 웜 바이러스에 걸리게 되는 컴퓨터의 수
 visited = [False for _ in range(computer + 1)]
-print(bfs(1))
+print(dfs(1))
