@@ -54,35 +54,16 @@ for i in range(len(ladder)):
     if ladder[i][0] == '?':
         ladderUp = ladder[:i]
         ladderDown = ladder[i+1:]
-        break
-
-# ???? 위까지
-for lad in ladderUp:
-    for i in range(k-1):
-        if lad[i] == "-":
-            start[i], start[i+1] = start[i+1], start[i]
-
-# 밑에서 ????만나기 전까지 (거꾸로 사다리 배열함)
-ladderDown.reverse()
-for lad in ladderDown:
-    for i in range(k-1):
-        if lad[i] == "-":
-            finalOrder[i], finalOrder[i+1] = finalOrder[i+1], finalOrder[i]
 
 # 두 배열 비교해서 사다리 만들기
 answer = []
 for i in range(len(start)-1):
-    if start[i] == finalOrder[i]:
-        answer.append("*")
+    if :
+        continue
+        # ㅋ..
     else:
-        # 다리 놔주기
-        if start[i] == finalOrder[i+1]:
-            answer.append("-")
-        # 이어주기
-        elif i != 0 and start[i] == finalOrder[i-1]:
-            answer.append("*")
-        else:
-            answer = ['x' for _ in range(k-1)]
-            break
+        # .. 다시.. 수정 중
+        continue
+
 # 정답
-print(''.join(answer))
+print(answer)

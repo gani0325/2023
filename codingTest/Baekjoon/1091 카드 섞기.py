@@ -44,18 +44,20 @@ s = list(map(int, input().split()))
 result = []
 answer = 0
 
-for i in range(N):
-    result.append(P[i])
+for i in range(n):
+    result.append(p[i])
 
 while True:
     t = False
+    mix = temp
 
-    for i in range(N):
+    for i in range(n):
+        # 0, 1, 2 밖에 없으니까!
         if mix[i] % 3 != result[i]:
             answer += 1
             temp = []
 
-            mix = temp
+            temp.append(mix)
 
             break
     else:
