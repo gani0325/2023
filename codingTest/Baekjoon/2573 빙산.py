@@ -53,3 +53,94 @@ N과 M은 3 이상 300 이하이다.
 만일 빙산이 다 녹을 때까지 분리되지 않으면 0을 출력한다.
 """
 
+# 1) BFS
+from collections import deque
+
+def bfs(x, y) :
+    # 빙산 위치
+    q = deque()
+    q.append((x, y))
+    # 주변에 바다가 있는 빙산을 (x, y, 바다 갯수)
+    visited[x][y] = 1
+    seaList = []
+
+    while q :
+        x, y = q.popleft()
+        sea = 0
+
+        for i in range(4) :
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if 0 <= nx < N and 0 <= ny < M :
+                if not graph[nx][ny] :
+                    # 빙산 주변의 바다 갯수
+                    sea += 1
+                elif graph[nx][ny] and not visited[nx][ny] :
+                    q.append((nx, ny))
+                    visited[nx][ny] = 1
+            
+        if sea > 0 :
+            seaList.append((x, y, sea))
+    # 빙산 녹이기
+    for x, y, sea in seaList :
+        graph[x][y] = max(0, graph[x][y] - sea)
+    
+    # 하나의 그룹을 탐색
+    return 1
+
+
+N, M = map(int, input().split())
+graph = []
+
+for i in range(N) :
+    graph.append(list(map(int, input().split())))
+
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+year = 0
+ice = []
+
+for i in range(N) :
+    for j in range(M) :
+        if graph[i][j] :
+            # 빙산의 위치를 (i, j)
+            ice.append((i, j))
+
+while ice :
+    visited = [[0] * (M) for _ in range(N)]
+    delList = []
+
+    # bfs() 에서 받아온 빙산 그룹의 개수
+    result = 0
+
+    for i, j in ice :
+        # 빙산 개수 더하기
+        if graph[i][j] and not visited[i][j] :
+            result += bfs(i, j)
+        # 빙산이 없다면
+        if graph[i][j] == 0 :
+            delList.append((i, j))
+
+    # 빙산 그룹이 2개 이상이면
+    if result > 1 :
+        print(year)
+        break
+    
+    # 다 녹은 빙산 제거
+    ice = sorted(list(set(ice) - set(delList)))
+    year += 1
+
+if result < 2 :
+    print(0)
+
+# input
+# 5 7
+# 0 0 0 0 0 0 0
+# 0 2 4 5 3 0 0
+# 0 3 0 2 5 2 0
+# 0 7 6 2 4 0 0
+# 0 0 0 0 0 0 0
+
+# output
+# 2
