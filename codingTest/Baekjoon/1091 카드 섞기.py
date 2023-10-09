@@ -41,30 +41,58 @@ p = list(map(int, input().split()))
 # 길이가 N인 수열 S
 s = list(map(int, input().split()))
 
-result = []
-answer = 0
+result_temp = [[] for _ in range(3)]
+p_temp = [[] for _ in range(3)]
+s_temp = [[] for _ in range(n)]
 
+# 처음 카드
+init_card = [i for i in range(n)]
+
+# 정답 카드 배열 => n = 6 일 때 [[0, 3], [1, 4], [2, 5]]
 for i in range(n):
-    result.append(p[i])
+    result_temp[i % 3].append(i)
 
-while True:
-    t = False
-    mix = temp
+# p 수열대로 원하는 카드 배열 먼저 생성 => n = 6 일 때 [[0, 3], [1, 4], [2, 5]]
+for i in range(n):
+    p_temp[p[i]].append(init_card[i])
+
+# s 수열대로 카드 섞기
+result = 0
+
+
+def s_card(s_temp):
+    ss_temp = [-1 for _ in range(n)]
 
     for i in range(n):
-        # 0, 1, 2 밖에 없으니까!
-        if mix[i] % 3 != result[i]:
-            answer += 1
-            temp = []
+        ss_temp[s[i]] = s_temp[i]
+    return ss_temp
 
-            temp.append(mix)
 
-            break
-    else:
-        break
+# 처음에는 그냥 섞어요
+ss_temp1 = s_card(init_card)
+ss_temp2 = s_card(ss_temp1)
 
-    if not t:
-        answer = -1
-        break
+# s 수열대로 한 후 카드 나누기
+print(ss_temp1)
+print(ss_temp2)
 
-print(answer)
+
+def p_card(ss_temp):
+    pp_temp = [[] for _ in range(3)]
+    for i in range(n):
+        pp_temp[p[i]].append(ss_temp[i])
+
+    sss_temp = [[] for _ in range(3)]
+
+    for i in range(n):
+        sss_temp[i % 3].append(ss_temp[i])
+    return sss_temp
+
+
+sss_temp1 = p_card(ss_temp2)
+
+print(sss_temp1, p_temp)
+if sss_temp1 == p_temp:
+    print("good")
+
+print(result)
