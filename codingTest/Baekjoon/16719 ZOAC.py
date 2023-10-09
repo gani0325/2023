@@ -15,29 +15,29 @@
 규칙에 맞게 순서대로 문자열을 출력한다.
 """
 
+import sys
 string = list(input())
-visited = [False] * len(string)
+temp = [[0]*2 for _ in range(len(string))]
+
+# ZOAC : [(90, 0), (79, 1), (65, 2), (67, 3)]
+# for i in range(len(string)):
+#     temp[i] = ord(string[i]), i
+
+# temp.sort(key=lambda x: (x[0], -x[1]))
+# print(temp)  # => [(65, 2), (67, 3), (79, 1), (90, 0)]
+
+result = [''] * len(string)
 
 
-def zoac(left, right):
-    if left == right:
+def func(arr, start):
+    if not arr:
         return
+    _min = min(arr)
+    idx = arr.index(_min)
+    result[start+idx] = _min
 
-    # 가장 작은 문자열 탐색
-    minStr = min(string[left:right])
-    minIndex = string[left:right].index(minStr) + left
+    print("".join(result))
+    func(arr[idx+1:], start+idx+1)
+    func(arr[:idx], start)
 
-    visited[minIndex] = True
-
-    # 사전순으로 먼저 나오는 알파벳 순서로 출력
-    for i in range(len(string)):
-        if visited[i]:
-            print(string[i], end='')
-    print()
-
-    # 찾은 문자 기준으로 앞, 뒤 탐색
-    zoac(minIndex + 1, right)
-    zoac(left, minIndex)
-
-
-zoac(0, len(string))
+func(string, 0)
