@@ -57,9 +57,6 @@ for i in range(n):
     p_temp[p[i]].append(init_card[i])
 
 # s 수열대로 카드 섞기
-result = 0
-
-
 def s_card(s_temp):
     ss_temp = [-1 for _ in range(n)]
 
@@ -67,32 +64,37 @@ def s_card(s_temp):
         ss_temp[s[i]] = s_temp[i]
     return ss_temp
 
-
-# 처음에는 그냥 섞어요
-ss_temp1 = s_card(init_card)
-ss_temp2 = s_card(ss_temp1)
-
 # s 수열대로 한 후 카드 나누기
-print(ss_temp1)
-print(ss_temp2)
-
-
 def p_card(ss_temp):
     pp_temp = [[] for _ in range(3)]
     for i in range(n):
         pp_temp[p[i]].append(ss_temp[i])
 
-    sss_temp = [[] for _ in range(3)]
+    ppp_temp = [[] for _ in range(3)]
 
     for i in range(n):
-        sss_temp[i % 3].append(ss_temp[i])
-    return sss_temp
+        pp_temp[i % 3].append(pp_temp[i])
+    return ppp_temp
 
 
-sss_temp1 = p_card(ss_temp2)
+def card(sss_temp, result) :
+    s_temp2 = [[] for _ in range(3)]
+    p_temp2 = [[] for _ in range(3)]
+    s_temp2 = s_card(sss_temp)
+    p_temp2 = p_card(s_temp2)
 
-print(sss_temp1, p_temp)
-if sss_temp1 == p_temp:
-    print("good")
+    result += 1    
+    if (p_temp2 == p_temp) :
+        return result
+    else :
+        for _ in range(n) :           
+            card(s_temp2, result)
+        return -1
 
-print(result)
+# 처음에는 그냥 섞어요
+result = 0
+if (result_temp == p_temp) :
+    print(0)
+else :
+    s_temp = s_card(init_card)
+    print(card(s_temp, result))
