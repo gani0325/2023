@@ -104,33 +104,46 @@ maze[x - 1][y - 1] = 'X'
 
 # 참가자 이동 =>  출구 + 참가자 [(3, 3), (1, 3), (3, 1), (3, 5)]
 # 출구와 가깝고, 상하 우선!
-dx = [0, 0, -1, 1]
-dy = [1, -1, 0, 0]
+dx = [1, -1, 0, 0]
+dy = [0, 0, -1, 1]
+
+ans = 0
+# 회전해야 하는 최소 정사각형을 찾아 기록해줍니다.
+sx, sy, square_size = 0, 0, 0
+# 회전의 구현을 편하게 하기 위해 2차원 배열을 하나 더 정의해줍니다.
+next_maze = [
+    [0] * (n + 1)
+    for _ in range(n + 1)
+]
 
 
 def move():
+    global runner, ans
+
+    # 출구의 좌표
     x, y = runner[0]
+    x -= 1
+    y -= 1
     for i in range(1, m+1):
         r, c = runner[i]
         r -= 1
         c -= 1
 
         for j in range(4):
-            nx = r + dx[i]
-            ny = c + dy[i]
-            if (0 <= nx < n and 0 <= ny <= n):
+            nx = r + dx[j]
+            ny = c + dy[j]
+            if (0 <= nx < n and 0 <= ny < n):
                 # 빈칸이거나 참가자 자리라면
                 if (maze[nx][ny] == 0):
                     # 처음 출구와의 거리보다 멀어지면
                     if (abs(r - x) < abs(r - nx)) or (abs(c - y) < abs(c - ny)):
-                        break
+                        continue
                     else:
                         # |x1 - x2] + |y1 - y2|
                         # 이동한다
                         runner[i] = nx, ny
-                        maze[nx][ny] = i
+                        # maze[nx][ny] = i
                         maze[r][c] = 0
+                else:
+                    continue
     return runner, maze
-
-
-print(move())
