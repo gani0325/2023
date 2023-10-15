@@ -46,15 +46,15 @@ s = list(map(int, input().split()))
 ans = 0
 first = copy.deepcopy(p)
 
-while [0, 1, 2]*(n//3) != P:
+while [0, 1, 2]*(n//3) != p:
     tmp = [0]*n
     # 규칙에 따라 카드 자리 바꿈
     for i in range(n):
-        tmp[s[i]] = P[i]
+        tmp[s[i]] = p[i]
     # 무의미한 반복이 진행
     if first == tmp:
         ans = -1
         break
     ans += 1
-    P = tmp
+    p = tmp
 print(ans)
