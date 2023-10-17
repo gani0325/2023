@@ -34,6 +34,8 @@
 만약, 섞어도 섞어도 카드를 해당하는 플레이어에게 줄 수 없다면, -1을 출력한다.
 """
 
+import copy
+
 # N개의 카드
 n = int(input())
 # 길이가 N인 수열 P (0, 1, 2 중 하나)
@@ -41,60 +43,18 @@ p = list(map(int, input().split()))
 # 길이가 N인 수열 S
 s = list(map(int, input().split()))
 
-result_temp = [[] for _ in range(3)]
-p_temp = [[] for _ in range(3)]
-s_temp = [[] for _ in range(n)]
+ans = 0
+first = copy.deepcopy(p)
 
-# 처음 카드
-init_card = [i for i in range(n)]
-
-# 정답 카드 배열 => n = 6 일 때 [[0, 3], [1, 4], [2, 5]]
-for i in range(n):
-    result_temp[i % 3].append(i)
-
-# p 수열대로 원하는 카드 배열 먼저 생성 => n = 6 일 때 [[0, 3], [1, 4], [2, 5]]
-for i in range(n):
-    p_temp[p[i]].append(init_card[i])
-
-# s 수열대로 카드 섞기
-def s_card(s_temp):
-    ss_temp = [-1 for _ in range(n)]
-
+while [0, 1, 2]*(n//3) != p:
+    tmp = [0]*n
+    # 규칙에 따라 카드 자리 바꿈
     for i in range(n):
-        ss_temp[s[i]] = s_temp[i]
-    return ss_temp
-
-# s 수열대로 한 후 카드 나누기
-def p_card(ss_temp):
-    pp_temp = [[] for _ in range(3)]
-    for i in range(n):
-        pp_temp[p[i]].append(ss_temp[i])
-
-    ppp_temp = [[] for _ in range(3)]
-
-    for i in range(n):
-        pp_temp[i % 3].append(pp_temp[i])
-    return ppp_temp
-
-
-def card(sss_temp, result) :
-    s_temp2 = [[] for _ in range(3)]
-    p_temp2 = [[] for _ in range(3)]
-    s_temp2 = s_card(sss_temp)
-    p_temp2 = p_card(s_temp2)
-
-    result += 1    
-    if (p_temp2 == p_temp) :
-        return result
-    else :
-        for _ in range(n) :           
-            card(s_temp2, result)
-        return -1
-
-# 처음에는 그냥 섞어요
-result = 0
-if (result_temp == p_temp) :
-    print(0)
-else :
-    s_temp = s_card(init_card)
-    print(card(s_temp, result))
+        tmp[s[i]] = p[i]
+    # 무의미한 반복이 진행
+    if first == tmp:
+        ans = -1
+        break
+    ans += 1
+    p = tmp
+print(ans)
