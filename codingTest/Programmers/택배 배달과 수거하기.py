@@ -19,7 +19,7 @@
 각 집에 배달할 재활용 택배 상자의 개수를 담은 1차원 정수 배열 deliveries와 각 집에서 수거할 빈 재활용 택배 상자의 개수를 담은 1차원 정수 배열 pickups가 매개변수로 주어집니다. 
 이때, 트럭 하나로 모든 배달과 수거를 마치고 물류창고까지 돌아올 수 있는 최소 이동 거리를 return 하도록 solution 함수를 완성해 주세요.
 
-💚 제한 사항
+🧡 제한 사항
 1 ≤ cap ≤ 50
 1 ≤ n ≤ 100,000
 deliveries의 길이 = pickups의 길이 = n
@@ -28,6 +28,12 @@ deliveries의 길이 = pickups의 길이 = n
     0 ≤ deliveries의 원소 ≤ 50
     0 ≤ pickups의 원소 ≤ 50
 트럭의 초기 위치는 물류창고입니다.
+
+
+💚 입출력
+cap	n	deliveries	          pickups         	      result
+4 	5	[1, 0, 3, 1, 2]	      [0, 3, 0, 4, 0]	        16
+2	  7	[1, 0, 2, 0, 1, 0, 2]	[0, 2, 0, 1, 0, 2, 0]	  30
 """
 
 # 트럭에 실을 수 있는 재활용 택배 상자의 최대 개수를 나타내는 정수 cap, 배달할 집의 개수를 나타내는 정수 n
@@ -45,12 +51,15 @@ def solution(cap, n, deliveries, pickups):
     while deliver < deliveries[i] or pick < pickups[i]:
       # 몇 번 왔다 갔다 해야 하는지 횟수
       cnt += 1
+      # 트럭에 실을 수 있는 최대 개수
       deliver += cap
       pick += cap
     deliver -= deliveries[i]
     pick -= pickups[i]
 
     # 배송/수거를 하면서 이동한 거리
-    # 해당 위치까지 이동한 횟수(cnt)를 구해준 뒤 answer에 더해준다
+    # 해당 위치까지 이동한 횟수(cnt)를 곱해준 뒤 answer에 더해준다
     answer += (i + 1) * cnt
+    
+    # 왕복 * 2
   return answer * 2
