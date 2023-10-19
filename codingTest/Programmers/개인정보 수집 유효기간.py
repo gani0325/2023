@@ -43,51 +43,61 @@ today	        terms	                privacies	                                  
 "2022.05.19"	["A 6", "B 12", "C 3"]	["2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C"]	                [1, 3]
 "2020.01.01"	["Z 3", "D 5"]	        ["2019.01.01 D", "2019.11.15 Z", "2019.08.02 D", "2019.07.01 D", "2018.12.28 Z"]    [1, 4, 5]
 """
+
+
 def solution(today, terms, privacies):
     answer = []
-    
+
     y, m, d = today.split(".")
     y, m = int(y), int(m)
-    
+
     # 오늘 날짜를 의미하는 문자열 today, 약관의 유효기간을 담은 1차원 문자열 배열 terms
     # 수집된 개인정보의 정보를 담은 1차원 문자열 배열 privacies
-    
+
     # input 값들을 전처리 해준다 예쁘게 다시 split 해서 새 배열 안으로 넣어준다
     terms_temp = []
 
-    
-    for i in range(len(terms)) :
+    for i in range(len(terms)):
         a, b = terms[i].split(" ")
         # [['A', 6], ['B', 12], ['C', 3]]
         terms_temp.append([a, int(b)])
-    
+
     privacies_temp = []
-    for i in range(len(privacies)) :
+    for i in range(len(privacies)):
         a, b = privacies[i].split(" ")
         y, m, d = a.split(".")
         # [[2021, 5, 2, 'A'], [2021, 7, 1, 'B'], [2022, 2, 19, 'C'], [2022, 2, 20, 'C']]
         privacies_temp.append([int(y), int(m), d, b])
 
-    new_privacies_temp = [[] for _ in range(len(privacies))] 
+    new_privacies_temp = [[] for _ in range(len(privacies))]
     # 유효 기간 입력하기
-    for i in range(len(terms_temp)) :
-        for j in range(len(privacies_temp)) :
+    for i in range(len(terms_temp)):
+        for j in range(len(privacies_temp)):
             temp = []
             # 약관 종류 비교하기
-            if terms_temp[i][0] == privacies_temp[j][3] :
+            if terms_temp[i][0] == privacies_temp[j][3]:
                 # 약관 유효 기관 (달) 더하기
                 yy = privacies_temp[j][1] + terms_temp[i][1]
                 # 12개월 (1년) 을 지난다면 년도 +1
-                if yy > 12 :
-                    privacies_temp[j][0] += 1
-                    yy -= 12
-                temp = [privacies_temp[j][0], str(yy).zfill(2), privacies_temp[j][2]]
+                if yy > 12:
+                    if (yy % 12 == 0):
+                        yyy = yy // 12 - 1
+                        privacies_temp[j][0] += yyy
+                        yy = 12
+                    else:
+                        yyy = yy // 12
+                        privacies_temp[j][0] += yyy
+                        yy -= 12 * yyy
+
+                temp = [privacies_temp[j][0], str(
+                    yy).zfill(2), privacies_temp[j][2]]
                 # ['2021.11.02', '2022.7.01', '2022.5.19', '2022.5.20']
+                print(temp)
                 new_privacies_temp[j] = ".".join(map(str, temp))
 
     # 오늘 날짜와 비교하기
-    for i in range(len(new_privacies_temp)) :
-        if today >= new_privacies_temp[i] :
+    for i in range(len(new_privacies_temp)):
+        if today >= new_privacies_temp[i]:
             answer.append(i+1)
-            
+
     return answer
