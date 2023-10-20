@@ -43,37 +43,30 @@ for _ in range(n):
     words.append(input())
 
 temp = []
+new_list = []
 
-for i in range(n - 1):
+for i in range(len(words) - 1):
     for k in range(i+1, n):
+        num = 0
+        temp = []
         for j in range(len(words[i])):
             if words[i][j] == words[k][j]:
-                temp.append([words[i], words[k]])
+                temp = [words[i], words[k]]
+
+                if temp not in new_list:
+                    new_list.append(temp)
+                num += 1
+
             else:
                 break
 
             # 그다음 단어의 길이가 더 짧다면 멈추기
             if (j+1) == len(words[k]):
                 break
-
-new_list = []
-for v in temp:
-    if v not in new_list:
-        new_list.append(v)
-
-for i in range(len(new_list)):
-    num = 0
-
-    for j in range(len(new_list[i][0])):
-        if new_list[i][0][j] == new_list[i][1][j]:
-            num += 1
-
-            # 그다음 단어의 길이가 더 짧다면 멈추기
-            if (num) == len(new_list[i][1]):
-                break
-        else:
-            break
-    new_list[i].append(num)
+        if not new_list:
+            continue
+        elif num != 0:
+            new_list[-1].append(num)
 
 new_list.sort(key=lambda x: (-x[2]))
 
