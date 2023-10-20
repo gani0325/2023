@@ -38,37 +38,39 @@ two
 n = int(input())
 
 words = []
+
 for _ in range(n):
     # ['noon', 'is', 'lunch', 'for', 'most', 'noone', 'waits', 'until', 'two']
     words.append(input())
 
-temp = []
-new_list = []
+ans = 0
+word1, word2 = "", ""
 
-for i in range(len(words) - 1):
-    for k in range(i+1, n):
-        num = 0
-        temp = []
-        for j in range(len(words[i])):
-            if words[i][j] == words[k][j]:
-                temp = [words[i], words[k]]
+for i in range(n):
+    if len(words[i]) < ans:
+        continue
 
-                if temp not in new_list:
-                    new_list.append(temp)
-                num += 1
+    # 그다음부터 끝까지 비교
+    for j in range(i + 1, n):
+
+        # 작은 문자열 길이만큼 비교해야됨 (안그러면 list index 초과)
+        length = min(len(words[i]), len(words[j]))
+
+        if length < ans or words[i] == words[j]:
+            continue
+
+        cnt = 0
+        for k in range(length):
+            # 작은 문자열 길이만큼 비교하기
+            if words[i][k] == words[j][k]:
+                cnt += 1
 
             else:
                 break
 
-            # 그다음 단어의 길이가 더 짧다면 멈추기
-            if (j+1) == len(words[k]):
-                break
-        if not new_list:
-            continue
-        elif num != 0:
-            new_list[-1].append(num)
+        if cnt > ans:
+            # ans에 접두사 길이 대입 (클 때마다 갱신하기)
+            word1, word2, ans = words[i], words[j], cnt
 
-new_list.sort(key=lambda x: (-x[2]))
-
-for i in range(2):
-    print(new_list[0][i])
+print(word1)
+print(word2)
