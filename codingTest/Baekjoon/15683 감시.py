@@ -33,126 +33,98 @@ CCTV의 최대 개수는 8개를 넘지 않는다.
 첫째 줄에 사각 지대의 최소 크기를 출력한다.
 """
 
-import queue
+import copy
 
-# 사무실 n * m
+# move = [
+#     [],
+#     [(0, 1), (0, -1), (1, 0), (-1, 0)],
+#     [[(0, 1), (0, -1)], [(1, 0), (-1, 0)]],
+#     [[(0, 1), (-1, 0)], [(0, 1), (1, 0)], [(0, -1), (1, 0)], [(0, -1), (-1, 0)]],
+#     [[(0, 1), (0, -1), (-1, 0)], [(0, 1), (-1, 0), (1, 0)],
+#      [(0, 1), (0, -1), (1, 0)], [(0, -1), (-1, 0), (1, 0)]],
+#     [(0, 1), (0, -1), (1, 0), (-1, 0)]
+# ]
+
+# 세로, 가로
 n, m = map(int, input().split())
 
-# 사무실 각 칸의 정보
+# cctv 이동경로
+move = [
+    [],
+    [[0], [1], [2], [3]],
+    [[0, 2], [1, 3]],
+    [[0, 1], [1, 2], [2, 3], [3, 0]],
+    [[0, 1, 2], [1, 2, 3], [2, 3, 0], [3, 0, 1]],
+    [[0, 1, 2, 3]]
+]
+
+# 북 동 남 서
+dx = [0, 1, 0, -1]
+dy = [1, 0, -1, 0]
+
+cctv = []
 office = []
-for _ in range(n):
+# 사무실 각 칸의 정보
+for i in range(n):
     # [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 6, 0], [0, 0, 0, 0, 0, 0]]
     office.append(list(map(int, input().split())))
-# [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
-cctv = [[0] * m for _ in range(n)]
-print(cctv)
-dir1 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-dir2 = [[(0, 1), (0, -1)], [(1, 0), (-1, 0)]]
-dir3 = [[(0, 1), (-1, 0)], [(0, 1), (1, 0)],
-        [(0, -1), (1, 0)], [(0, -1), (-1, 0)]]
-dir4 = [[(0, 1), (0, -1), (-1, 0)], [(0, 1), (-1, 0), (1, 0)],
-        [(0, 1), (0, -1), (1, 0)], [(0, -1), (-1, 0), (1, 0)]]
-dir5 = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-
-
-def in_range(nx, ny):
-    # 범위 밖이면 0 return
-    return 0 >= nx or nx > n or 0 >= ny or ny > m
-
-
-def cnt_cctv(cctv):
-    cnt = 0
-    for i in range(n):
-        for j in range(m):
-            if cctv[i][j] == "#":
-                cnt += 1
-    return cnt
-
-
-temp = []
-
-max_cnt = 0
-for i in range(n):
     for j in range(m):
+        if office[i][j] in [1, 2, 3, 4, 5]:
+            # cctv 종류, x, y 좌표
+            # [[1, 2, 2]]
+            cctv.append([office[i][j], i, j])
+
+# 4방향에 빈칸 있는지
+# office 정보, cctv 방향 정보(list 로 주어짐), cctv 위치
+
+
+def check(graph, move, x, y):
+    for i in move:
+        nx = x
+        ny = y
+
+        while True:
+            nx += dx[i]
+            ny += dy[i]
+
+            # 범위 벗어남
+            if 0 > nx or 0 > ny or nx >= n or ny >= m:
+                break
+            # 벽
+            if graph[nx][ny] == 6:
+                break
+            # 감시
+            elif graph[nx][ny] == 0:
+                # 걍 음수 만들어버려~~ 어차피 감시 못한 곳만 셀거임
+                graph[nx][ny] -= -1
+
+# cctv 개수 만큼 구현
+
+
+def dfs(d, graph):
+    global min_value
+
+    # 계속 증가하며 확인했던 cctv를 끝까지 했을 때
+    if d == len(cctv):
         cnt = 0
-        queue = queue()
-        # cctv 종류 1 ~ 6
-        if office[i][j] == 1:
-            for k in range(len(dir1)):
-                x = i + dir1[k][0]
-                y = j + dir1[k][1]
-                queue.append((x, y))
+        for i in range(n):
+            # 감시 못한 빈 공간 0 만 세기
+            cnt += graph[i].count(0)
+        min_value = min(min_value, cnt)
+        return
 
-                while (queue):
-                    nx, ny = queue.pop()
-                    if (in_range(nx, ny) == 0):
-                        break
-                    # 빈 공간이거나 이미 감시 영역인 경우
-                    if office[nx][ny] == 0 or office[nx][ny] == "#":
-                        cctv[nx][ny] = "#"
+    temp = copy.deepcopy(graph)
+    # cctv 번호, cctv 위치
+    cctv_num, x, y = cctv[d]
 
-                        # 한칸 더 전진
-                        nx = nx + dir1[k][0]
-                        ny = ny + dir1[k][1]
-                        queue.append((nx, ny))
-            max_cnt = max(cnt, cnt_cctv(cctv))
+    for i in move[cctv_num]:
+        check(temp, i, x, y)
+        # 다음 cctv로 넘어가고, cctv 정보 갱신 & 끝났으면 return
+        dfs(d + 1, temp)
+        temp = copy.deepcopy(graph)
 
-        if office[i][j] == 2:
-            for k in range(len(dir1)):
-                for p in range(len(dir1[k])):
-                    x = i + dir2[k][p][0]
-                    y = j + dir2[k][p][1]
-                    queue.append((x, y))
 
-                    while (queue):
-                        nx, ny = queue.pop()
-                        if (in_range(nx, ny) == 0):
-                            break
-                        # 빈 공간이거나 이미 감시 영역인 경우
-                        if office[nx][ny] == 0 or office[nx][ny] == "#":
-                            cctv[nx][ny] = "#"
-
-                            # 한칸 더 전진
-                            x = i + dir2[k][p][0]
-                            y = j + dir2[k][p][1]
-                            queue.append((nx, ny))
-
-        if office[i][j] == 3:
-            for k in range(len(dir1)):
-                for p in range(len(dir1[k])):
-                    x = i + dir3[k][p][0]
-                    y = j + dir3[k][p][1]
-                    queue.append((x, y))
-
-                    while (queue):
-                        nx, ny = queue.pop()
-                        if (in_range(nx, ny) == 0):
-                            break
-                        # 빈 공간이거나 이미 감시 영역인 경우
-                        if office[nx][ny] == 0 or office[nx][ny] == "#":
-                            cctv[nx][ny] = "#"
-
-                            # 한칸 더 전진
-                            x = i + dir3[k][p][0]
-                            y = j + dir3[k][p][1]
-                            queue.append((nx, ny))
-
-        if office[i][j] == 4:
-            for k in range(len(dir1)):
-                for p in range(len(dir1[k])):
-                    x = i + dir4[k][p][0]
-                    y = j + dir4[k][p][1]
-                    queue.append((x, y))
-
-                    while (queue):
-                        nx, ny = queue.pop()
-                        if (in_range(nx, ny) == 0):
-                            break
-                        # 빈 공간이거나 이미 감시 영역인 경우
-                        if office[nx][ny] == 0 or office[nx][ny] == "#":
-                            cctv[nx][ny] = "#"
-
-                            # 한칸 더 전진
-                            x = i + dir4[k][p][0]
-                            y = j + dir4[k][p][1]
-                            queue.append((nx, ny))
+# 최댓값 해서 최소 수 만들기
+min_value = int(1e9)
+dfs(0, office)
+print(min_value)
