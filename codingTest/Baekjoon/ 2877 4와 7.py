@@ -12,47 +12,33 @@
 첫째 줄에 창영이가 좋아하는 숫자 중 K번째 작은 수를 출력한다.
 """
 
+# 중복 순열
+from itertools import product
+
 # K번째 작은 수
 k = int(input())
 
-num = 0
-cnt = 0
+numbers = [4, 7]
+
+def pro (k, numbers) :
+    cnt = 0
+    result = []
+    i = 0
+    while (1) :
+        i += 1
+        # [(4,), (7,)]
+        # [(4, 4), (4, 7), (7, 4), (7, 7)]
+        # [(4, 4, 4), (4, 4, 7), (4, 7, 4), (4, 7, 7), (7, 4, 4), (7, 4, 7), (7, 7, 4), (7, 7, 7)]
+        data = list(product(numbers, repeat=i))
+
+        for j in range(len(data)) :
+            cnt += 1
+
+            if cnt == k :
+                result = data[j]
+                return result
 
 
-while(1) :
-    num += 1
-    temp = []
-
-    for j in str(num):
-        temp.append(int(j))
-
-    if 1 in temp :
-        continue
-    
-    elif 2 in temp :
-        continue
-    
-    elif 3 in temp :
-        continue
-    
-    elif 5 in temp :
-        continue
-
-    elif 6 in temp :
-        continue
-    
-    elif 8 in temp :
-        continue
-    
-    elif 9 in temp :
-        continue
-    
-    elif 0 in temp :
-        continue
-
-    else :
-        cnt += 1
-
-    if cnt == k :
-        print(num)
-        break
+answer = pro(k, numbers)
+for x in answer:
+    print(x, end="")
