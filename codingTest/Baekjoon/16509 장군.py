@@ -26,6 +26,8 @@
 
 💙 출력
 상이 왕에게 도달할 수 있는 최소 이동 횟수를 출력한다. 만약 도달할 수 없다면 -1을 출력한다.
+
+https://ddingmin00.tistory.com/entry/%EB%B0%B1%EC%A4%80%ED%8C%8C%EC%9D%B4%EC%8D%AC-16509%EB%B2%88-%EC%9E%A5%EA%B5%B0
 """
 from collections import deque
 
@@ -36,6 +38,7 @@ r1, c1 = map(int, input().split())
 r2, c2 = map(int, input().split())
 
 step_x = [
+        #### [상하좌우 중 한칸 이동, 대각선으로 한칸 이동]
         # 위
 		[-1, -2],
         [-1, -2],
@@ -67,44 +70,63 @@ step_y = [
 visit = [[0] * 9 for _ in range(10)]
 # 위, 왼쪽, 아래쪽, 오른쪽
 dx = [-3, -3, -2, 2, 3, 3, -2, 2]
-dy = [-2, 2, -3, -3, -2, 3, 3, 3]
+dy = [-2, 2, -3, -3, -2, 2, 3, 3]
 
 def in_range(nx, ny) :
     return 0 <= nx < 10 and 0 <= ny < 9
 
-def move() :
-    for i in range(4) :
-        # 상하좌우로 한칸 이동
-        nx = r2 + dx[i]
-        ny = c2 + dy[i]
-
-        # 대각선으로 일단 1칸 이동
-        nx = r2 - 1
-        ny = c2 - 1
+# 이동 경로 살펴보기
+def move(x, y, i) :
+    for j in range(2) :
+        # [상하좌우 중 한칸 이동, 대각선으로 한칸 이동]
+        nx = x + step_x[i][j]
+        ny = y + step_y[i][j]
         
-        # 범위 안인지 확인
-        if (in_range(nx, ny)) :
-            # 대각선 이동 중 기물이 있다면
-            if nx == r1 and ny == c1 :
-                continue
-            
-            # 대각선으로 1칸 더 이동
-            nx = r2 - 1
-            ny = c2 - 1
-
-            # 범위 안인지 확인
-            if (in_range(nx, ny)) :
-                # 대각선 이동 완료 후 기물이 있다면
-                if nx == r1 and ny == c1 :
-                    break
-                else :
-                    cnt += 1
+        # 이동 경로에 왕이 있으면
+        if nx == r2 and ny == c2 :        
+            return 0
+    return 1
 
 
+visited = [[0] * 9 for _ in range(10)]
+
+# 상의 상하좌우 한칸 + 대각선 두칸 후 위치
 def bfs(x, y) :
     queue = deque()
-    queue.append()
+    queue.append([x, y, 0])
+    visited[x][y] = 1
 
+    while queue :
+        x, y, cnt = queue.popleft()
+
+        for i in range(8) :
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            # 상하좌우 중 한칸 + 대각선 두칸 했을 때 범위 넘어가면! for 문으로 돌아간다
+            if not in_range(nx, ny) :
+                continue
+        
+            # 그 전에 이동경로 살펴보기.. 왕 있다면! for 문으로 돌아간다
+            # 기존 상의 위치 + 이동한 방향 인덱스
+            if not move(nx, ny, i) :
+                continue
+
+            # 이미 방문 했다면
+            if visited[nx][ny] == 1 :
+                continue
+            
+            # 왕 만난다면
+            if nx == r2 and ny == c2 :
+                # 상이 왕에게 도달할 수 있는 최소 이동 횟수를 출력
+                return cnt + 1
+
+            visited[nx][ny] = 1
+            cnt += 1
+            queue.append([nx, ny, cnt])
+
+    # 만약 도달할 수 없다면 -1을 출력
+    return -1
 
 # 상의 위치
-dfs(r2, c2)
+print(bfs(r1, c1))
