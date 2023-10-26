@@ -26,9 +26,8 @@
 
 💙 출력
 상이 왕에게 도달할 수 있는 최소 이동 횟수를 출력한다. 만약 도달할 수 없다면 -1을 출력한다.
-
-https://ddingmin00.tistory.com/entry/%EB%B0%B1%EC%A4%80%ED%8C%8C%EC%9D%B4%EC%8D%AC-16509%EB%B2%88-%EC%9E%A5%EA%B5%B0
 """
+
 from collections import deque
 
 # 상의 위치
@@ -122,8 +121,8 @@ def bfs(x, y) :
                 return cnt + 1
 
             visited[nx][ny] = 1
-            cnt += 1
-            queue.append([nx, ny, cnt])
+            # cnt += 1 하고 밑에 cnt를 대입했는데 숫자가 더 커져서 나옴 뭘까?
+            queue.append([nx, ny, cnt + 1])
 
     # 만약 도달할 수 없다면 -1을 출력
     return -1
