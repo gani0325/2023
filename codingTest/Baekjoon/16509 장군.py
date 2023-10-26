@@ -82,7 +82,7 @@ def move(x, y, i) :
         ny = y + step_y[i][j]
         
         # 이동 경로에 왕이 있으면
-        if nx == r2 and ny == c2 :        
+        if (nx == r2 and ny == c2) :        
             return 0
     return 1
 
@@ -108,7 +108,7 @@ def bfs(x, y) :
         
             # 그 전에 이동경로 살펴보기.. 왕 있다면! for 문으로 돌아간다
             # 기존 상의 위치 + 이동한 방향 인덱스
-            if not move(nx, ny, i) :
+            if not move(x, y, i) :
                 continue
 
             # 이미 방문 했다면
