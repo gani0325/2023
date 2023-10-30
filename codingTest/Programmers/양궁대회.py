@@ -54,3 +54,73 @@ n	info	                result
 9	[0,0,1,2,0,1,1,1,1,1,1]	[1,1,2,0,1,2,2,0,0,0,0]
 10	[0,0,0,0,0,0,0,0,3,4,3]	[1,1,1,1,1,1,1,1,0,0,2]
 """
+
+import copy
+
+min_temp = -1e9
+answers = []
+
+# 라이언과 어피치의 점수 차이를 계산하는 함수
+
+
+def CalScore(info, ryanShot):
+    apeach, ryan = 0, 0
+
+    for i in range(11):
+        if (info[i], ryanShot[i]) == (0, 0):
+            continue
+        if info[i] >= ryanShot[i]:
+            apeach += 10 - i
+        else:
+            ryan += 10 - i
+    return ryan - apeach
+
+
+def dfs(info, ryanShot, n, i):
+    global min_temp, answers
+    if i == 11:
+        if n != 0:
+            ryanShot[10] = n
+        scoreDiff = CalScore(info, ryanShot)
+
+        if scoreDiff <= 0:
+            return
+        result = copy.deepcopy(ryanShot)
+
+        # 현재 구한 최대 점수차를 낼 수 있는 화살 결과 경우의 수
+        if scoreDiff > min_temp:
+            # 최대점수차 갱신
+            min_temp = scoreDiff
+            # 이전 결과들로 만들어진 최대 점수차와 같은 점수차가 나는 라이언의 화살 결과가 나오면 answers 배열에 추가
+            answers = [result]
+            return
+
+        if scoreDiff == min_temp:
+            answers.append(result)
+        return
+
+    # 점수 먹는 경우
+    if info[i] < n:
+        ryanShot.append(info[i] + 1)
+        dfs(info, ryanShot, n - info[i] - 1, i + 1)
+        ryanShot.pop()
+
+    # 점수 안먹는 경우
+    ryanShot.append(0)
+    dfs(info, ryanShot, n, i + 1)
+    ryanShot.pop()
+
+
+# 화살의 개수를 담은 자연수 n, 어피치가 맞힌 과녁 점수의 개수를 10점부터 0점까지 순서대로 담은 정수 배열 info
+def solution(n, info):
+    global min_temp, answers
+
+    dfs(info, [], n, 0)
+
+    # 라이언이 우승할 수 없는 경우(무조건 지거나 비기는 경우)는 [-1]을 return
+    if answers == []:
+        return [-1]
+
+    # 가장 큰 점수 차이로 우승하기 위해 n발의 화살을 어떤 과녁 점수에 맞혀야 하는지를 10점부터 0점까지 순서대로 정수 배열
+    answers.sort(key=lambda x: x[::-1], reverse=True)
+    return answers[0]
