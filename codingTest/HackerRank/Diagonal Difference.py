@@ -38,24 +38,34 @@ import re
 import sys
 
 #
-# Complete the 'aVeryBigSum' function below.
+# Complete the 'diagonalDifference' function below.
 #
-# The function is expected to return a LONG_INTEGER.
-# The function accepts LONG_INTEGER_ARRAY ar as parameter.
+# The function is expected to return an INTEGER.
+# The function accepts 2D_INTEGER_ARRAY arr as parameter.
 #
 
-def aVeryBigSum(ar):
+def diagonalDifference(arr):
     # Write your code here
-    return sum(ar)
+    sum1 = 0
+    sum2 = 0
+    
+    # [[11, 2, 4], [4, 5, 6], [10, 8, -12]]
+    for i in range(len(arr)) :
+        sum1 += arr[i][i]
+        sum2 += arr[i][len(arr)- 1 - i]
+    return abs(sum1 - sum2)
 
 if __name__ == '__main__':
     fptr = open(os.environ['OUTPUT_PATH'], 'w')
 
-    ar_count = int(input().strip())
+    n = int(input().strip())
 
-    ar = list(map(int, input().rstrip().split()))
+    arr = []
 
-    result = aVeryBigSum(ar)
+    for _ in range(n):
+        arr.append(list(map(int, input().rstrip().split())))
+
+    result = diagonalDifference(arr)
 
     fptr.write(str(result) + '\n')
 
