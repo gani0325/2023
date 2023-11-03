@@ -21,37 +21,35 @@
 오븐의 최상단이 1이고, 최하단 가장 깊은 곳이 D이 된다. 만약 피자가 모두 오븐에 들어가지 않는다면, 0을 출력한다.
 """
 
-from collections import deque
-import copy
-
 # 오븐의 깊이 D와 피자 반죽의 개수 N
 d, n = map(int, input().split())
 
 # 오븐의 최상단부터 시작하여 깊이에 따른 오븐의 지름
-ttoven = list(map(int, input().split()))
-oven = []
-for i in range(len(ttoven)-1, -1, -1) :
-    # [3, 2, 6, 3, 4, 6, 5]
-    oven.append(ttoven[i])
+oven = list(map(int, input().split()))
 
 # 피자 반죽이 완성되는 순서대로, 그 각각의 지름
-# deque([3, 2, 5])
-pizza = deque(map(int, input().split()))
+pizza = list(map(int, input().split()))
 
 result = [0] * d
-pizza_temp = copy.deepcopy(pizza)
 
-while pizza :
-    for i in range(d) :
-        x = pizza_temp.popleft()
-        if oven[i] >= x :
-            # 밑에서부터 위로 오븐 위치
-            result[i] = 1
-            
+end = d
+for i in range(n) :
+    for j in range(0, end) :
+        
+        if oven[j] >= pizza[i] :
+            if j == end - 1 :
+                result[j - 1] = 1
+                end = j
+            continue
         else :
-            # 초기화
-            pizza_temp = copy.deepcopy(pizza)
-            result = []
-            
+            result[j - 1] = 1
+            end = j
+            break
 
-    return -1
+if sum(result) != n :
+    print(-1)
+else :
+    for i in range(d) :
+        if result[i] == 1 :
+            print(i+1)
+            break
