@@ -30,26 +30,21 @@ oven = list(map(int, input().split()))
 # 피자 반죽이 완성되는 순서대로, 그 각각의 지름
 pizza = list(map(int, input().split()))
 
-result = [0] * d
+# 재정렬
+for i in range(d - 1):
+    if oven[i] < oven[i+1]:
+        oven[i+1] = oven[i]
 
-end = d
-for i in range(n) :
-    for j in range(0, end) :
-        
-        if oven[j] >= pizza[i] :
-            if j == end - 1 :
-                result[j - 1] = 1
-                end = j
-            continue
-        else :
-            result[j - 1] = 1
-            end = j
-            break
+flag = 0
 
-if sum(result) != n :
-    print(-1)
-else :
-    for i in range(d) :
-        if result[i] == 1 :
-            print(i+1)
-            break
+for i in range(d - 1, -1, -1):
+    if pizza[flag] > oven[i]:
+        continue
+    
+    flag += 1
+    if flag == n:
+        print(i+1)
+        break
+
+if flag != n :
+    print(0)
