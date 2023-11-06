@@ -85,12 +85,17 @@ int main() {
 	const char *filename = "/tmp/test.txt";
 	
 	// 파일 열기
-	file = fopen(filename, "w");
+	file = fopen(filename, "rb");
 	if (file == NULL) {
-		printf("파일 열기 오류\n");
+		printf("파일 열기 오류");
 		return 1;
-	} else {
-		printf("파일 열기 성공\n");
 	}
-    return 0;
+	
+	// 파일 포인터를 파일 끝으로 이동
+	if (fseek(file, 0, SEEK_END) != 0) {
+		printf("파일 포인터 이동 오류");
+		fclose(file);
+		return 1;
+	}
+	return 0;
 }
