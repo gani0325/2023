@@ -14,7 +14,23 @@ n개의 정점을 갖는 이진 트리의 정점에 1부터 n까지의 번호가
 첫째 줄에 프리오더를 출력한다.
 """
 
-def preOrder(inorder_s, inorder_e, postorder_s, postorder_e):
+# 1) 후위순회에서 마지막에 오는 값은 트리의 루트
+# 2) 중위순회에서 루트를 기준으로 왼쪽 서브 트리와 오른쪽 서브 트리
+# 3) 후위순회를 중위순회와 같이 나눈 후 각 서브 트리에서 마지막에 오는 값은 서브 트리의 루트
+
+# 파이썬의 재귀 최대 깊이의 기본 설정이 1,000회 이기 때문에 런타임 에러가 발생
+import sys
+sys.setrecursionlimit(10**9)
+input = sys.stdin.readline
+
+n = int(input())
+inorder = list(map(int, input().split()))
+postorder = list(map(int, input().split()))
+
+# inorder의 값 index 리스트
+inorder_pos = [0] * (n+1)
+
+def preorder(inorder_s, inorder_e, postorder_s, postorder_e):
     # 재귀함수 종료 조건
     if (inorder_s > inorder_e) or (postorder_s > postorder_e):
         return
@@ -23,21 +39,20 @@ def preOrder(inorder_s, inorder_e, postorder_s, postorder_e):
     p = postorder[postorder_e]
     print(p, end =' ')
     
+    # 왼쪽 서브트리 노드의 개수
     left = inorder_pos[p] - inorder_s
+
+    # 오른쪽 서브트리 노드의 개수
     right = inorder_e - inorder_pos[p]
     
     # 왼쪽 서브 트리
-    preOrder(inorder_s, inorder_s+left-1, postorder_s, postorder_s+left-1)
+    preorder(inorder_s, inorder_s+left-1, postorder_s, postorder_s+left-1)
     # 오른쪽 서브 트리
-    preOrder(inorder_e - right + 1, inorder_e, postorder_e - right, postorder_e - 1)
+    preorder(inorder_e - right + 1, inorder_e, postorder_e - right, postorder_e - 1)
 
 
-n = int(input())
-inorder = list(map(int, input().split()))
-postorder = list(map(int, input().split()))
-inorder_pos = [0] * (n+1)
-
+# 후위순회의 마지막값이 중위순회 몇번째에 존재하는지 알기 위해
 for i in range(n):
     inorder_pos[inorder[i]] = i
     
-preOrder(0, n-1, 0, n-1)
+preorder(0, n-1, 0, n-1)
