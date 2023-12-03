@@ -58,4 +58,64 @@ cost는 문제를 푸는데 드는 시간입니다.
 alp	cop	problems	                                        result
 10	10	[[10,15,2,1,2],[20,20,3,3,4]]	                    15
 0	0	[[0,0,2,1,2],[4,5,3,1,2],[4,11,4,0,2],[10,4,0,4,2]]	13
+
+# 참고 : https://tech.kakao.com/2022/07/13/2022-coding-test-summer-internship/
 """
+
+
+# 알고력과 코딩력을 담은 정수 alp와 cop, 문제의 정보를 담은 2차원 정수 배열 problems
+def solution(alp, cop, problems):
+    # problems (필요한 알고력, 필요한 코딩력, 풀면 증가하는 알고력, 풀면 증가하는 코딩력, 문제 푸는데 드는 시간)
+    max_alp = 0
+    max_cop = 0
+
+    for i in problems:
+        # 문제들 중에 가장 높은 필요한 알고력, 코딩력
+        max_alp = max(max_alp, i[0])
+        max_cop = max(max_cop, i[1])
+    
+    # 현재 실력 쌓아야할 알고력, 코딩력 (근데 어차피 가장 최소 아닌지? 예외가 있나봄)
+    alp = min(alp, max_alp)
+    cop = min(cop, max_cop)
+
+    # dp[i][j] : (알고력 i, 코딩력 j) 상태에 도달하는 데 필요한 최단 시간
+    # 나머지 DP 배열의 값은 무한(적당히 큰 값)으로 초기화한 후 다음과 같은 방법으로 DP 배열을 업데이트
+    # dp = [[], [], [] .... , [], []]
+    dp = [[1e9] * (max_cop + 1) for _ in range(max_alp + 1)]
+    
+    # 현재 도달하는 최단 시간
+    # dp[초기 알고력][초기 코딩력] = 0
+    dp[alp][cop] = 0
+
+    # 궁금.. 시작값 dp[alp][cop] 이전 것들은 .. 불필요...함
+    for i in range(alp, max_alp + 1) :
+        for j in range(cop, max_cop + 1) :
+            # 알고력 낮다면 => 공부하면 1시간 증가
+            if i < max_alp : 
+                dp[i+1][j] = min(dp[i+1][j], dp[i][j] + 1)
+            # 코딩력 낮다면 => 공부하면 1시간 증가
+            if j < max_cop : 
+                dp[i][j+1] = min(dp[i][j+1], dp[i][j] + 1)
+            
+            # 문제 풀기 (수준에 맞지 않는다면 그만큼 공부하기)
+            # problems의 원소는 [alp_req, cop_req, alp_rwd, cop_rwd, cost]
+            for alp_req, cop_req, alp_rwd, cop_rwd, cost in problems :
+                # 알고력, 코딩력이 수준에 맞다면
+                if i >= alp_req and j >= cop_req :
+                    
+                    # 문제 푼거에 대한 증가하는 알고력, 코딩력
+                    nalp = min(i + alp_rwd, max_alp)
+                    ncop = min(j + cop_rwd, max_cop)
+                    # 문제 푸는 시간 (같거나, 작거나)
+                    dp[nalp][ncop] = min(dp[nalp][ncop], dp[i][j] + cost)
+    # alp_req, cop_req 가 해당하면 그만큼 문제 여러번 풀 수 있음
+    # 그러다가 그다음 수준에 해당하면 넘어가고, 각각에 대한 알고력, 코딩력 공부하기 (그러면 그 전 문제 못 품)
+    # 2 1
+    # 4 2
+
+    # 4 5
+    # 7 6
+    # 10 7
+    # 10 11
+    # 그 전에 못 푼애들은 최대에 의해 이미 푼걸로 간주
+    return dp[max_alp][max_cop]
