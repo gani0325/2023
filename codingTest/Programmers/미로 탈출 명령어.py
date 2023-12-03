@@ -59,3 +59,44 @@ n	m	x	y	r	c	k	result
 2	2	1	1	2	2	2	"dr"
 3	3	1	2	3	3	4	"impossible"
 """
+
+from collections import deque
+
+def distance(x, y, r, c) :
+    return abs(x - (r-1)) + abs(y - (c-1))
+
+# 격자의 크기 n, m, 출발 위치 x, y, 탈출 지점 r, c, 탈출까지 이동해야 하는 거리 k
+def solution(n, m, x, y, r, c, k):
+    answer = ""
+
+    # k > 최단 거리, 최단거리 - k 가 왔다 갔다 왕복이 안되는 홀수라면 도착 불가
+    if distance(x-1, y-1, r, c) > k or ((distance(x-1, y-1, r, c) - k) % 2 == 1) :
+        return "impossible"
+
+    # d l r u
+    dir = ["d", "l", "r", "u"]
+    dx = [1, 0, 0, -1]
+    dy = [0, -1, 1, 0]
+
+    queue = deque()
+    queue.append((x - 1, y - 1, 0, ""))
+
+    while queue:
+        x1, y1, cnt, answer = queue.popleft()
+        if (x1 == r-1) and (y1 == c-1) and cnt == k :
+            return answer
+        
+        for i in range(4) :
+            nx = x1 + dx[i]
+            ny = y1 + dy[i]
+
+            if 0 <= nx < n and 0 <= ny < m :
+                # 남은 거리 + 이동했던 거리 + 그담 거리 1 > k 이면 다른 방향으로 ㄱㄱ
+                if distance(nx, ny, r, c) + cnt + 1 > k :
+                    continue
+                # queue 업뎃 하고 다시 d 부터
+                answer += dir[i]
+                queue.append((nx, ny, cnt+1, answer))
+                break
+
+solution(3, 4, 2, 3, 3, 1, 5)
