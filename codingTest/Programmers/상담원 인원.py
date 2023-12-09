@@ -41,3 +41,61 @@ k	n	reqs	                                                            result
         [60, 30, 2], [65, 30, 1], [70, 100, 2]]	
 2	3	[[5, 55, 2], [10, 90, 2], [20, 40, 2], [50, 45, 2], [100, 50, 2]]	90
 """
+
+# combinations(iterable, r) : 원소의 수가 r개인 조합
+# combinations_with_replacement(iterable, r) : 원소의 수가 r개인 중복 조합
+# permutations(iterable, r) : 몇 개를 골라 순서를 고려해 나열한 경우의 수 (순열)
+# heap 이용해 상담 시간이 빠르게 끝나는 멘토와 대기자의 상담 시간을 비교하여 대기 시간 구하기
+
+import heapq
+from itertools import combinations_with_replacement, permutations
+
+# 상담 유형의 수 k, 멘토의 수 n, 참가자의 상담 요청을 담은 2차원 정수 배열 reqs
+def solution(k, n, reqs):
+    answer = 1e9
+
+    consulting = [[] for _ in range(k)]
+    # [a, b, c] 형태의 길이가 3인 정수 배열
+    # c번 유형의 상담을 원하는 참가자가 a분에 b분 동안의 상담을 요청
+    for i in reqs:
+        # consulting[유형별] = [시간, 상담시간]
+        # [[[10, 60], [20, 30], [50, 40], [65, 30]], [[60, 30], [70, 100]], [[15, 100], [30, 50]]]
+        consulting[i[2] - 1].append([i[0], i[1]])
+    # 멘토 배치
+    mento = set()
+    # 최소 각 유형에 나올 수 있는 멘토 수 (각 유형별로 멘토 인원이 적어도 한 명 이상이어야 함)
+    arr = [i for i in range(1, n - k + 2)]    
+    
+    # ex) k = 3 이라면, 중복 조합 -> (1, 1, 3), (1, 2, 2) ...
+    for mem in combinations_with_replacement(arr, k):
+        # 최소 각 유형에 나올 수 있는 멘토 수 & 중복 조합 된 경우의 수 합이 멘토 수와 같은지
+        if mem not in mento and sum(mem) == n:
+            # 가능한 모든 순서를 반환 (순열)
+            for p in permutations(mem, k):
+                mento.add(p)
+    print(consulting)
+    # mento : {(1, 1, 3), (1, 3, 1), (1, 2, 2), (2, 1, 2), (2, 2, 1), (3, 1, 1)}
+    for case in mento:
+        result = 0
+
+        for i in range(k):
+            # 멘토의 수 [0], [0, 0, 0] ...
+            heap = [0] * case[i]
+            
+            # consulting[상담 유형] : [시간, 상담 시간]
+            for startTime, consultingTime in consulting[i]:
+                # 모든 값을 pop한 결과를 보면, 작은 값 순서(오름차순)로 출력된 것
+                prev = heapq.heappop(heap)
+                # 시작시간이 이전 종료 시간보다 작다면 바로 진행
+                if startTime >= prev:
+                    # 추가된 원소가 부모보다 작으면 (최소) 힙 구조가 아니므로, 부모와 자리를 바꾼다
+                    heapq.heappush(heap, startTime + consultingTime)
+                # 대기 시간 추가
+                else:    
+                    result += prev - startTime
+                    heapq.heappush(heap, prev + consultingTime)
+        
+        # 중복조합 + 순열로 구한 "멘토 배열의 조합" 중에서, 가장 작은 대기 시간
+        answer = min(answer, result)
+
+    return answer
