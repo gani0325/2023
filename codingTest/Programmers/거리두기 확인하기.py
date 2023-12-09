@@ -45,3 +45,63 @@ places	                                                     result
 ["OOOXX", "XOOOX", "OOOXX", "OXOOX", "OOOOO"], 
 ["PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"]]	
 """
+
+from collections import deque
+
+# bfs(p, [i, j, 0])
+# 대기실 가로 길이, [places 행, places 열, 거리]
+def bfs(p, q):
+    queue = deque([q])
+    
+    visited = [[False] * 5 for _ in range(5)]
+    dx = [0, 0, -1, 1]
+    dy = [-1, 1, 0, 0]
+    
+    while queue:
+        x, y, d = queue.popleft()
+        # 응시자 자리
+        visited[x][y] = True
+        
+        # 주변 탐색
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            cnt = d + 1
+            
+            # 거리 실패 or 성공 유무만 가리면 됨
+            if 0 <= nx < 5 and 0 <= ny < 5 and not visited[nx][ny]:
+                visited[nx][ny] = True
+                
+                # 응시자가 앉아있는 자리
+                if p[nx][ny] == 'P':
+                    # 거리가 2 이하면 제한 거리 실패!
+                    if cnt <= 2:
+                        return False
+                
+                # 빈 테이블을 의미
+                elif p[nx][ny] == 'O':
+                    if cnt == 1:
+                        queue.append([nx, ny, cnt])
+    return True
+
+# 자리에 앉아있는 응시자들의 정보와 대기실 구조를 대기실별로 담은 2차원 문자열 배열
+def solution(places):
+    answer = []
+    
+    for p in places:
+        flag = 1
+        
+        # 대기실은 5개이며, 각 대기실은 5x5 크기
+        for i in range(5):
+            for j in range(5):
+                # 응시자가 앉아있는 자리
+                if p[i][j] == 'P':
+                    ok = bfs(p, [i, j, 0])
+                    if ok == 0:
+                        flag = 0
+                        
+        # 각 대기실 별로 모든 응시자가 거리두기를 지키고 있으면 1
+        # 한 명이라도 지키지 않고 있으면 0       
+        answer.append(flag)
+        
+    return answer
