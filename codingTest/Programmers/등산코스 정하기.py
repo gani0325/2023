@@ -51,3 +51,55 @@ n	paths	                                                                        
 7	[[1, 2, 5], [1, 4, 1], [2, 3, 1], [2, 6, 7], [4, 5, 1], [5, 6, 1], [6, 7, 1]]	            [3, 7]	[1, 5]	    [5, 1]
 5	[[1, 3, 10], [1, 4, 20], [2, 3, 4], [2, 4, 6], [3, 5, 20], [4, 5, 6]]	                    [1, 2]	[5]	        [5, 6]
 """
+
+# XX산의 지점 수 n, 각 등산로의 정보를 담은 2차원 정수 배열 paths, 
+# 출입구들의 번호가 담긴 정수 배열 gates, 산봉우리들의 번호가 담긴 정수 배열 summits
+import heapq
+
+def solution(n, paths, gates, summits):
+    graph = [[] for _ in range(n + 1)]
+    
+    # i번 지점과 j번 지점을 연결하는 등산로가 있다
+    # w는 두 지점 사이를 이동하는 데 걸리는 시간
+    for i, j, w in paths:
+        graph[i].append([j, w])
+        graph[j].append([i, w])
+
+    visited = [False] * (n + 1)
+    
+    for summit in summits:
+        visited[summit] = True
+
+    max_int = 1e9
+    distance = [max_int] * (n + 1)
+    
+    temp = []
+    # 출입구들의 번호가 담긴 정수 배열
+    for gate in gates:
+        distance[gate] = 0
+        heapq.heappush(temp, [0, gate])
+
+    # 휴식 없이 이동해야 하는 시간 중 가장 긴 시간을 해당 등산코스의 intensit
+    # 등산코스에서 출입구는 처음과 끝에 한 번씩, 산봉우리는 한 번만 포함
+    # intensity가 최소가 되도록 등산코스를 정하기
+    
+    while temp:
+        d, i = heapq.heappop(temp)
+        
+        # 산봉우리
+        if visited[i]:
+            continue
+        for j, dd in graph[i]:
+            dd = max(distance[i], dd)
+            if distance[j] > dd:
+                distance[j] = dd
+                heapq.heappush(temp, [dd, j])
+
+    result = [-1, max_int]
+    for summit in sorted(summits):
+        if distance[summit] < result[1]:
+            result[0] = summit
+            result[1] = distance[summit]
+            
+    # [산봉우리의 번호, intensity의 최솟값]
+    return result
