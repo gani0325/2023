@@ -21,34 +21,50 @@ A부터 Z까지 알파벳은 10부터 35에 차례대로 대응한다.
 첫째 줄에 문제의 정답을 출력한다.
 """
 
-1. count 딕셔너리를 만들어 각 문자의 계수를 저장해놓는다.
+# 수의 개수
+N = int(input())
+# 36진법 숫자(0-9, A-Z)
+nums = [input() for _ in range(N)]
+# K개의 숫자를 고른다
+K = int(input())
 
-2. count 딕셔너리의 값에 각 문자열이 Z로 바꼈을 때의 차를 계산해 곱한다(중요도)
+num36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+num36_diff = []
+num_sum = 0
+num_sep = []
 
-3. count 딕셔너리를 각 문자와 중요도를 묶어놓은 tuple을 원소로 갖는 리스트로 변경, (ex: [("A": 20), ("B": 10)]) 중요도가 높은 순서로 정렬한다.
+# 현재값들의 합 구함
+for i in nums:
+    temp = []
+    temp.extend(i)
+    num_sep.append(temp)
+    num_sum += int(i, 36)
 
-4. 중요도가 높은 문자 K개를 "Z" 로 바꾼다
+# 각 문자를 Z로 변경했을 때 합의 변화량
+for k in num36:
+    sum_diff = 0
 
-5. 바꾼 36진수를 10진수로 바꾸고, 더한다
+    for i in num_sep:
+        temp = ''
+        for n in i:
+            if n == k:
+                temp += 'Z'
+            else:
+                temp += n
+        # 특정 문자를 변경했을 때 증가량(변경 후 합 - 변경 전 합
+        sum_diff += int(temp, 36)
+    num36_diff.append(sum_diff - num_sum)
 
-6. 더한 10진수를 다시 36진수로 바꾼다
+# 최대값
+maxmax = num_sum + sum(sorted(num36_diff, reverse=True)[:K])
 
+# 36진수 변환
+result = ''
+while maxmax:
+    result = num36[maxmax % 36] + result
+    maxmax //= 36
 
-10진수 < -> 36진수 변환 방법
-10진수 -> 36진수
-
-10진수를 2진수, 8진수로 바꾸는 방법과 같게 구현했습니다.
-
-10진수를 다른 진수로 바꾸는 법은 https: // sdks.tistory.com/668 다음 글을 참고해주세요.
-
-
-36진수 -> 10진수
-
-파이썬에서 다른 진수를 10진수로 변환하는것은 int() 함수를 이용합니다.
-
-변환하려는 수가 A, N진수라고 했을때 N진수 -> 10진수는 다음과 같이 변환 가능합니다.
-
-int(A, N)
-
-
-질문이나 오타 등은 댓글로 남겨주시면 참고하겠습니다.
+if result :
+    print(result)
+else :
+    print(0)
