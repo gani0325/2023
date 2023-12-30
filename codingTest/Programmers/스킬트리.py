@@ -28,3 +28,22 @@ skill_trees의 원소는 스킬을 나타내는 문자열입니다.
 skill	skill_trees	                        return
 "CBD"	["BACDE", "CBADF", "AECB", "BDA"]	2
 """
+
+from collections import deque
+
+def solution(skill, skill_trees):
+    answer = 0
+    
+    for i in skill_trees:
+				# 스킬트리(skill)를 큐에 넣고, 하나씩 뽑는다
+        good_skill = deque(skill)
+        
+        for j in i :
+            # 선행 스킬에 포함된다면
+            if j in skill :
+                if j != good_skill.popleft() :
+                    break
+        else :
+            answer += 1
+        
+    return answer
