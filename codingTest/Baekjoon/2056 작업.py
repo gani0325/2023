@@ -1,5 +1,5 @@
 """
-[9207] 페그 솔리테어
+[2056] 작업
 
 💛 문제
 수행해야 할 작업 N개 (3 ≤ N ≤ 10000)가 있다. 
@@ -29,3 +29,32 @@ K번 작업에 대해 선행 관계에 있는(즉, K번 작업을 시작하기 �
 💙 출력
 첫째 줄에 모든 작업을 완료하기 위한 최소 시간을 출력한다.
 """
+
+n = int(input())
+
+# 해당 노드에서 걸리는 시간
+times = [0] * (n+1)
+graph = {}
+
+for i in range(1, n+1):
+    works = list(map(int, input().split()))
+    times[i] = works[0]
+    
+    if works[1] == 0:
+        continue
+    
+    for j in works[2:]:
+        if i in graph:
+            graph[i].append(j)
+        else:
+            graph[i] = [j]
+            
+for i in range(1, n+1):
+    if i in graph:
+        time = 0
+        for j in graph[i]:
+            # 해당 작업에 필요한 선행 작업들의 max 시간을 더한다
+            time = max(time, times[j])
+        times[i] += time
+        
+print(max(times))
