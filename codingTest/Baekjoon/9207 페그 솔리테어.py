@@ -21,3 +21,32 @@
 각 테스트 케이스에 대해서, 핀을 움직여서 남길 수 있는 핀의 최소 개수와 
 그 개수를 만들기 위해 필요한 최소 이동 횟수를 출력한다.
 """
+
+# 현재 위치, cnt
+def move(x, y, cnt):
+    
+    dx=[0,0,1,-1] 
+    dy=[1,-1,0,0]
+
+    if cnt >=0:
+        if pin_num == 0 or pin_num > cnt:
+            pin_num = cnt
+            
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+
+            if graph[nx][ny] == 'o':
+                nnx = nx+dx[i]
+                nny = ny+dy[i]
+
+             
+
+# 테스트 케이스의 개수
+n = int(input())
+
+
+graph = []
+for _ in range(n):
+    for i in range(5):
+        graph.append(list(input()))
