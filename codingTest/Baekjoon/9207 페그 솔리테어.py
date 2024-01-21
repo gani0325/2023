@@ -14,7 +14,7 @@
 💚 입력
 첫째 줄에 테스트 케이스의 개수 1 ≤ N ≤ 100이 주어진다. 각 테스트 케이스는 게임판의 초기 상태이다.
 게임판은 모두 같은 모양을 가진다. 
-(예제 참고) '.'는 빈 칸, 'o'는 핀이 꽂혀있는 칸, '#'는 구멍이 없는 칸이다. 핀의 개수는 최대 8이며, 
+'.'는 빈 칸, 'o'는 핀이 꽂혀있는 칸, '#'는 구멍이 없는 칸이다. 핀의 개수는 최대 8이며, 
 각 테스트 케이스는 빈 줄로 구분되어져 있다.
 
 💙 출력
@@ -22,31 +22,51 @@
 그 개수를 만들기 위해 필요한 최소 이동 횟수를 출력한다.
 """
 
-# 현재 위치, cnt
-def move(x, y, cnt):
-    
-    dx=[0,0,1,-1] 
-    dy=[1,-1,0,0]
+from sys import stdin # 입력이 많지는 않지만 그래도 해주는 것이 좋다.
+input=stdin.readline
 
-    if cnt >=0:
-        if pin_num == 0 or pin_num > cnt:
-            pin_num = cnt
-            
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
+dx=[0,0,1,-1] 
+dy=[1,-1,0,0]
 
-            if graph[nx][ny] == 'o':
-                nnx = nx+dx[i]
-                nny = ny+dy[i]
+def solve(cnt):
+    global remains, moves
+    array=[]
+    for i in range(5):
+        for j in range(9):
+                        # 현재 위치에 페그가 있는지 확인
+            if graph[i][j]=='o':
+                array.append((j,i))
+                
+    if len(array) < remains:
+        moves = cnt
+        remains = len(array) 
 
-             
-
+    for x,y in array:
+        for i in range(4): # 4방향 이동
+            nx=x+dx[i]
+            ny=y+dy[i]
+            # 페그를 움직일 수 있는 조건 확인
+            if -1<nx+dx[i]<9 and -1<ny+dy[i]<5:
+                if graph[ny][nx]=='o' and graph[ny+dy[i]][nx+dx[i]]=='.':
+                    graph[ny][nx]='.'
+                    graph[ny+dy[i]][nx+dx[i]]='o'
+                    graph[y][x]='.'
+                    solve(cnt+1)
+                    
+                    # 을 제거 이전상태
+                    graph[ny][nx]='o'
+                    graph[ny+dy[i]][nx+dx[i]]='.'
+                    graph[y][x]='o'
+                    
 # 테스트 케이스의 개수
 n = int(input())
 
-
-graph = []
 for _ in range(n):
-    for i in range(5):
-        graph.append(list(input()))
+    # '.'는 빈 칸, 'o'는 핀이 꽂혀있는 칸, '#'는 구멍이 없는 칸
+    graph = [list(input().rstrip()) for i in range(5)]
+    input()
+    
+    # 핀을 움직여서 남길 수 있는 핀의 최소 개수와 그 개수를 만들기 위해 필요한 최소 이동 횟수
+    remains, moves = 10, 10
+    solve(0)
+    print(remains, moves)
