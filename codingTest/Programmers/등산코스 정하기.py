@@ -86,8 +86,8 @@ def solution(n, paths, gates, summits):
     while temp:
         d, i = heapq.heappop(temp)
         
-        # 산봉우리
-        if visited[i]:
+        # 산봉우리면 continue
+        if distance[i] < d or visited[i]:
             continue
         for j, dd in graph[i]:
             dd = max(distance[i], dd)
